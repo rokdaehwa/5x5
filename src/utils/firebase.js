@@ -1,15 +1,17 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/analytics';
+import dotenv from 'dotenv';
+dotenv.config();
 
 var firebaseConfig = {
-	apiKey: 'AIzaSyAH_CvOb0CqqzyQeONluFjiasCaf2H1Zj8',
-	authDomain: 'five-x-five.firebaseapp.com',
-	projectId: 'five-x-five',
-	storageBucket: 'five-x-five.appspot.com',
-	messagingSenderId: '830198825383',
-	appId: '1:830198825383:web:dbb112610caa47598bb682',
-	measurementId: 'G-MEFDVZW0X7',
+	apiKey: process.env.REACT_APP_API_KEY,
+	authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+	projectId: process.env.REACT_APP_PROJECT_ID,
+	storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+	messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+	appId: process.env.REACT_APP_APP_ID,
+	measurementId: process.env.REACT_APP_MESUREMENT_ID,
 };
 
 // Initialize Firebase
