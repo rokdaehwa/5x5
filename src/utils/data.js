@@ -95,10 +95,10 @@ export const EXERCISE_DATA = [
 	{ key: 27, exerciseName: '뜀걸음', exerciseParts: ['유산소'] },
 	{ key: 28, exerciseName: '농구', exerciseParts: ['유산소'] },
 
-	{ key: 29, exerciseName: '크런치', exerciseParts: ['유산소'] },
-	{ key: 30, exerciseName: '플랭크', exerciseParts: ['유산소'] },
-	{ key: 31, exerciseName: '레그레이즈', exerciseParts: ['유산소'] },
-	{ key: 32, exerciseName: '행잉 레그레이즈', exerciseParts: ['유산소'] },
+	{ key: 29, exerciseName: '크런치', exerciseParts: ['코어'] },
+	{ key: 30, exerciseName: '플랭크', exerciseParts: ['코어'] },
+	{ key: 31, exerciseName: '레그레이즈', exerciseParts: ['코어'] },
+	{ key: 32, exerciseName: '행잉 레그레이즈', exerciseParts: ['코어'] },
 
 	{ key: 33, exerciseName: '데드리프트', exerciseParts: ['전신', '등', '코어', '하체'] },
 ];

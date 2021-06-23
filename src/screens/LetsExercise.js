@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import LetsStartScreen from './LetsStartScreen';
 import LetsEndScreen from './LetsEndScreen';
 import LetsExerciseScreen from './LetsExerciseScreen';
-import LetsRestScreen from './LetsRestScreen';
 import LetsResultScreen from './LetsResultScreen';
 
 function LetsExercise(props) {
@@ -49,13 +48,23 @@ function LetsExercise(props) {
 	};
 
 	const handleExerciseToRest = (done) => {
+		console.log('to the next round!');
+		// const info = list[index];
+		// pushExerciseSetInfo(info.exerciseKey, info.setKey, info.setIndex, {
+		// 	done: done,
+		// 	finished: Date(),
+		// });
+		// setIsRest(true);
+	};
+	
+	const handleNextExercise = (done) => {
+		console.log('to the next round!');
 		const info = list[index];
 		pushExerciseSetInfo(info.exerciseKey, info.setKey, info.setIndex, {
 			done: done,
 			finished: Date(),
 		});
-		setIsRest(true);
-	};
+	}
 
 	const handleRestToExercise = () => {
 		setIndex(index + 1);
@@ -92,23 +101,14 @@ function LetsExercise(props) {
 		const total = list.length;
 		if (index <= -1) return <LetsStartScreen today={today} exercises={exercises} handleNext={handleNext} />;
 		else if (index <= total - 1) {
-			if (isRest)
-				return (
-					<LetsRestScreen
-						handleNext={handleRestToExercise}
-						nextSetInfo={getSetInfo(index + 1)}
-						progress={index / list.length}
+			return <LetsExerciseScreen
+						handleNext={handleNextExercise}
+						getSetInfo={getSetInfo}
+					   index={index}
+					   numList={list.length}
 						flush={flush}
-					/>
-				);
-			return (
-				<LetsExerciseScreen
-					handleNext={handleExerciseToRest}
-					setInfo={getSetInfo()}
-					progress={index / list.length}
-					flush={flush}
-				/>
-			);
+					   setIndex={setIndex}
+					/>;
 		} else if (index === total) return <LetsEndScreen handleNext={handleNext} />;
 		else if (index === total + 1)
 			return <LetsResultScreen flush={flush} exercises={exercises} today={today} handleSubmit={handleSubmit}/>;

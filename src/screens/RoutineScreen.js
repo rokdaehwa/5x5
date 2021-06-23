@@ -122,6 +122,7 @@ function RoutineScreen(props) {
 	const history = useHistory();
 	const [toggleEdit, setToggleEdit] = useState(false);
 	const [toggleSet, setToggleSet] = useState(false);
+	const [isDragging, setIsDragging] = useState(false);
 	const [selected, setSelected] = useState({
 		exerciseKey: null,
 		setKey: null,
@@ -141,15 +142,21 @@ function RoutineScreen(props) {
 	} = props;
 
 	const onDragEnd = (result) => {
+		setIsDragging(false);
+		
 		// dropped outside the list
 		if (!result.destination) {
 			return;
 		}
 
 		const newItems = reorder(exercises, result.source.index, result.destination.index);
-
+		
 		setExercises(newItems);
 	};
+	
+	const onDragStart = () => {
+		setIsDragging(true);
+	}
 
 	return (
 		<div>
@@ -186,7 +193,7 @@ function RoutineScreen(props) {
 					</Typography>
 					<Typography>{`${exercises.length}가지의 운동`}</Typography>
 				</div>
-				<DragDropContext onDragEnd={onDragEnd}>
+				<DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
 					<Droppable droppableId="droppable">
 						{(provided, snapshot) => (
 							<List {...provided.droppableProps} ref={provided.innerRef}>
@@ -404,7 +411,6 @@ function RoutineScreen(props) {
 				onClose={() => setToggleSet(false)}
 				TransitionComponent={Transition}
 			>
-				{`${selected.exerciseKey} ${selected.setKey}`}
 				<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 					<Toolbar>
 						<IconButton onClick={() => setToggleSet(false)}>

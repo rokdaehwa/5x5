@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar } from '@material-ui/core';
@@ -66,6 +66,18 @@ const useStyles = makeStyles((theme) => ({
 			textAlign: 'center',
 		},
 	},
+	setInfoRest: {
+		height: theme.spacing(8), // 이 수치를 조절해서 화면 표시
+		display: 'flex',
+		flexDirection: 'column-reverse',
+		'& > *': {
+			backgroundColor: theme.palette.common.black,
+			color: theme.palette.common.white,
+			width: '100vw',
+			padding: `${theme.spacing(2)}px 0px`,
+			textAlign: 'center',
+		},
+	},
 	spacing: {
 		width: theme.spacing(1),
 		height: theme.spacing(1),
@@ -80,10 +92,16 @@ function LetsExerciseScreen(props) {
 	const classes = useStyles();
 	const history = useHistory();
 
+	const [setInfo, setSetInfo] = useState({
+		exerciseName: '',
+		exerciseParts: [],
+	});
 	const [ticker, setTicker] = useState(0);
 	const [isTicking, setIsTicking] = useState(true);
-	
-	//https://velog.io/@jakeseo_me/%EB%B2%88%EC%97%AD-%EB%A6%AC%EC%95%A1%ED%8A%B8-%ED%9B%85%EC%8A%A4-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8%EC%97%90%EC%84%9C-setInterval-%EC%82%AC%EC%9A%A9-%EC%8B%9C%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90#%ED%9B%85-%EB%81%84%EC%A7%91%EC%96%B4%EB%82%B4%EA%B8%B0
+	const [isRest, setIsRest] = useState(false);
+
+	const { handleNext, getSetInfo, index, numList, flush, setIndex } = props;
+
 	useInterval(
 		() => {
 			setTicker(ticker + 1);
@@ -91,15 +109,26 @@ function LetsExerciseScreen(props) {
 		isTicking ? 1000 : null
 	);
 
-	const { handleNext, setInfo, progress, flush } = props;
+	useEffect(() => {
+		const _setInfo = getSetInfo(index);
+		setSetInfo(_setInfo);
+	}, [index]);
 
 	const formatMMSS = (second) => {
-		let min =parseInt(second / 60);
+		let min = parseInt(second / 60);
 		if (min < 10) min = '0' + min;
 		let sec = second % 60;
 		if (sec < 10) sec = '0' + sec;
-		return `${min}:${sec}`
-	}
+		return `${min}:${sec}`;
+	};
+
+	const handleClick = (done) => {
+		if (isRest) return setIsRest(false);
+
+		handleNext(done);
+		setIsRest(true);
+		setIndex(index + 1);
+	};
 
 	return (
 		<div className={classes.root}>
@@ -116,49 +145,44 @@ function LetsExerciseScreen(props) {
 					<div className={classes.trailing}>
 						<Typography>{`${formatMMSS(ticker)}`}</Typography>
 						<IconButton onClick={() => setIsTicking(!isTicking)}>
-							{isTicking ? <PauseRoundedIcon />
-							 : <PlayArrowRoundedIcon />}
+							{isTicking ? <PauseRoundedIcon /> : <PlayArrowRoundedIcon />}
 						</IconButton>
 					</div>
 				</Toolbar>
 				<LinearProgress
 					className={classes.linearProgress}
 					variant="determinate"
-					value={progress * 100}
+					value={(index / numList) * 100}
+					color={isRest ? 'secondary' : 'primary'}
 				/>
 			</AppBar>
 			<Toolbar />
 			<div className={classes.titleContainer}>
 				<Typography variant="h5">
-					<b>{setInfo.exerciseName}</b>
+					<b>{isRest ? '휴식' : setInfo.exerciseName}</b>
 				</Typography>
-				<Typography variant="h6">{setInfo.exerciseParts.join(', ')}</Typography>
+				<Typography variant="h6">
+					{isRest ? '45초' : setInfo.exerciseParts.join(', ')}
+				</Typography>
 			</div>
 			<div className={classes.container}>
 				{setInfo.set === null ? null : (
-					<div className={classes.setInfo}>
+					<div className={isRest ? classes.setInfoRest : classes.setInfo}>
 						<Typography variant="h6">
-							<b>{setInfo.set}</b>
+							<b>{isRest ? `다음: ${getSetInfo(index).set}` : setInfo.set}</b>
 						</Typography>
 					</div>
 				)}
 				<div className={classes.controlContainer}>
-					<IconButton
-						onClick={() => {
-							console.log('fail');
-							handleNext(false);
-						}}
-					>
-						<HighlightOffRoundedIcon color="error" className={classes.iconButton} />
-					</IconButton>
+					{isRest ? null : (
+						<IconButton onClick={() => handleClick(false)}>
+							<HighlightOffRoundedIcon color="error" className={classes.iconButton} />
+						</IconButton>
+					)}
+
 					<div className={classes.spacing} />
-					<IconButton
-						onClick={() => {
-							console.log('success');
-							handleNext(true);
-						}}
-					>
-						<CheckCircleRoundedIcon color="primary" className={classes.iconButton} />
+					<IconButton onClick={() => handleClick(true)}>
+						<CheckCircleRoundedIcon color={isRest ? '' : 'primary'} className={classes.iconButton} />
 					</IconButton>
 				</div>
 			</div>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import dotenv from 'dotenv';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { EXERCISE_DATA } from './utils/data.js';
+import { EXERCISE_DATA, MOCK_EXERCISES } from './utils/data.js';
 import { myTheme } from './utils/theme.js';
 import firebase, { database } from './utils/firebase';
 
@@ -18,6 +19,7 @@ import RoutineScreen from './screens/RoutineScreen';
 
 import TestScreen from './screens/TestScreen';
 
+dotenv.config();
 const theme = createMuiTheme(myTheme);
 
 // https://github.com/konstantinmuenster/notion-clone/tree/master/frontend
@@ -28,8 +30,8 @@ function App() {
 	// exercises: [ Exercise ]
 	// Exercise: { created, key, exerciseName, exerciseParts, exerciseSets }
 	// Set: { created, weight, reps, repsUnit, setReps, done, finished  }
-	// const [exercises, setExercises] = useState(MOCK_EXERCISES);
-	const [exercises, setExercises] = useState([]);
+	const [exercises, setExercises] = useState(MOCK_EXERCISES);
+	// const [exercises, setExercises] = useState([]);
 
 	// timeStamp: { launched, started, ended, closed, lastUpdated }
 	const [timeStamp, setTimeStamp] = useState({
@@ -247,10 +249,10 @@ function App() {
 							pushExerciseSetInfo={pushExerciseSetInfo}
 						/>
 					</Route>
-					<Route path="/admin-rokdaehwa">
+					<Route path={process.env.REACT_APP_ADMIN_ADDRESS}>
 						<AdminScreen />
 					</Route>
-					<Route path="/test-rokdaehwa">
+					<Route path={process.env.REACT_APP_TEST_ADDRESS}>
 						<TestScreen exercises={exercises} setExercises={setExercises} />
 					</Route>
 					<Route>
