@@ -1,1 +1,1 @@
-export { default } from './LandingScreen';
+export { default } from './LandingScreen.Container';

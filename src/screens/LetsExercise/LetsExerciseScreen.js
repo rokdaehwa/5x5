@@ -12,7 +12,7 @@ import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 
-import { useInterval } from '../hooks/useInterval';
+import { useInterval } from 'hooks/useInterval';
 
 const useStyles = makeStyles((theme) => ({
 	root: {

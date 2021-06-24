@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Card from '@material-ui/core/Card';
@@ -18,48 +17,10 @@ import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 
-import { CATEGORIES, toExerciseName, getExercisesByName } from '../utils/data.js';
+import CategoryDrawer from 'components/CategoryDrawer';
+import { CATEGORIES, toExerciseName, getExercisesByName } from 'utils/data.js';
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-	},
-	appBar: {
-		flexGrow: 1,
-		backgroundColor: theme.palette.common.white,
-		color: theme.palette.common.black,
-	},
-	toolbar: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
-	trailing: {
-		marginLeft: 'auto',
-	},
-	card: {
-		borderRadius: theme.spacing(4),
-		backgroundColor: theme.palette.common.black + '0a',
-	},
-	space: {
-		width: '100%',
-		paddingTop: '50%',
-	},
-	drawerItem: {
-		color: theme.palette.common.white,
-	},
-	drawerPaper: {
-		backgroundColor: theme.palette.common.black,
-	},
-	drawerContent: {
-		width: '70vw',
-		color: theme.palette.common.white,
-		'& > *': {
-			margin: theme.spacing(2),
-		},
-	},
-}));
+import { useStyles } from './styles';
 
 const Container = styled.div`
 	display: grid;
@@ -100,9 +61,9 @@ function CategoryDetailScreen(props) {
 					<Typography variant="h5" className={classes.typography}>
 						<b>{name}</b>
 					</Typography>
-						<IconButton onClick={() => setNavOpen(true)}>
-							<CategoryOutlinedIcon />
-						</IconButton>
+					<IconButton onClick={() => setNavOpen(true)}>
+						<CategoryOutlinedIcon />
+					</IconButton>
 				</Toolbar>
 			</AppBar>
 
@@ -133,35 +94,7 @@ function CategoryDetailScreen(props) {
 					);
 				})}
 			</Container>
-			<Drawer
-				open={navOpen}
-				anchor="right"
-				classes={{ paper: classes.drawerPaper }}
-				onClose={() => setNavOpen(false)}
-			>
-				<Toolbar />
-				<Toolbar className={classes.trailing}>
-					<IconButton onClick={() => setNavOpen(false)}>
-						<CloseOutlinedIcon className={classes.drawerItem} />
-					</IconButton>
-				</Toolbar>
-				<div className={classes.drawerContent}>
-					{CATEGORIES.map((item) => {
-						return (
-							<div key={item.key}>
-								<Link
-									to={`/category/${item.to}`}
-									style={{ textDecoration: 'none' }}
-								>
-									<Typography className={classes.drawerItem} variant="h6">
-										{item.name}
-									</Typography>
-								</Link>
-							</div>
-						);
-					})}
-				</div>
-			</Drawer>
+			<CategoryDrawer open={navOpen} setOpen={setNavOpen} />
 		</div>
 	);
 }

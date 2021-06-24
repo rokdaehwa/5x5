@@ -3,30 +3,26 @@ import dotenv from 'dotenv';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { EXERCISE_DATA, MOCK_EXERCISES } from './utils/data.js';
-import { myTheme } from './utils/theme.js';
-import firebase, { database } from './utils/firebase';
+import { EXERCISE_DATA, MOCK_EXERCISES } from 'utils/data.js';
+import { myTheme } from 'utils/theme.js';
+import firebase, { database } from 'utils/firebase';
 
 // TODO: SEARCH!!
 // TODO: EXERCISE_DETAIL!!!
-import AdminScreen from './screens/AdminScreen';
-import CategoryDetailScreen from './screens/CategoryDetailScreen';
-import HomeScreen from './screens/HomeScreen';
+import AdminScreen from 'screens/AdminScreen';
+import CategoryDetailScreen from 'screens/CategoryDetailScreen';
+import HomeScreen from 'screens/HomeScreen';
+import LandingScreen from 'screens/LandingScreen';
+import LetsExercise from 'screens/LetsExercise';
+import NotFoundScreen from 'screens/NotFoundScreen';
+import RoutineScreen from 'screens/RoutineScreen';
 
-import LetsExercise from './screens/LetsExercise';
-import NotFoundScreen from './screens/NotFoundScreen';
-import RoutineScreen from './screens/RoutineScreen';
+import TestScreen from 'screens/TestScreen';
 
-import TestScreen from './screens/TestScreen';
-
-import LandingScreen from './screens/LandingScreen'
+import ErrorBoundary from 'screens/ErrorBoundary';
 
 dotenv.config();
 const theme = createMuiTheme(myTheme);
-
-// https://github.com/konstantinmuenster/notion-clone/tree/master/frontend
-// https://notion-clone.kmuenster.com/p/60bdf877dde8f8002440c30e?public=true
-// https://medium.com/swlh/how-to-build-a-text-editor-like-notion-c510aedfdfcc
 
 function App() {
 	// exercises: [ Exercise ]
@@ -217,50 +213,56 @@ function App() {
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<Router>
-				<Switch>
-					<Route path="/" exact>
-						<HomeScreen numExercises={exercises.length} addExercise={addExercise} userName={userInfo.userName}/>
-					</Route>
-					<Route path="/hello" exact>
-						<LandingScreen userInfo={userInfo} setUserInfo={setUserInfo}/>
-					</Route>
-					<Route path="/routine" exact>
-						<RoutineScreen
-							today={today}
-							exercises={exercises}
-							addExerciseSet={addExerciseSet}
-							handleSetReps={handleSetReps}
-							deleteExercise={deleteExercise}
-							deleteExerciseSet={deleteExerciseSet}
-							updateExerciseSet={updateExerciseSet}
-							setExercises={setExercises}
-						/>
-					</Route>
-					<Route path="/category/:to" exact>
-						<CategoryDetailScreen
-							addExercise={addExercise}
-							numExercises={exercises.length}
-						/>
-					</Route>
-					<Route path="/exercise" exact>
-						<LetsExercise
-							handleSubmit={handleSubmit}
-							today={today}
-							flush={flush}
-							exercises={exercises}
-							pushExerciseSetInfo={pushExerciseSetInfo}
-						/>
-					</Route>
-					<Route path={process.env.REACT_APP_ADMIN_ADDRESS}>
-						<AdminScreen />
-					</Route>
-					<Route path={process.env.REACT_APP_TEST_ADDRESS}>
-						<TestScreen exercises={exercises} setExercises={setExercises} />
-					</Route>
-					<Route>
-						<NotFoundScreen />
-					</Route>
-				</Switch>
+				<ErrorBoundary>
+					<Switch>
+						<Route path="/" exact>
+							<HomeScreen
+								numExercises={exercises.length}
+								addExercise={addExercise}
+								userName={userInfo.userName}
+							/>
+						</Route>
+						<Route path="/hello" exact>
+							<LandingScreen />
+						</Route>
+						<Route path="/routine" exact>
+							<RoutineScreen
+								today={today}
+								exercises={exercises}
+								addExerciseSet={addExerciseSet}
+								handleSetReps={handleSetReps}
+								deleteExercise={deleteExercise}
+								deleteExerciseSet={deleteExerciseSet}
+								updateExerciseSet={updateExerciseSet}
+								setExercises={setExercises}
+							/>
+						</Route>
+						<Route path="/category/:to" exact>
+							<CategoryDetailScreen
+								addExercise={addExercise}
+								numExercises={exercises.length}
+							/>
+						</Route>
+						<Route path="/exercise" exact>
+							<LetsExercise
+								handleSubmit={handleSubmit}
+								today={today}
+								flush={flush}
+								exercises={exercises}
+								pushExerciseSetInfo={pushExerciseSetInfo}
+							/>
+						</Route>
+						<Route path={process.env.REACT_APP_ADMIN_ADDRESS}>
+							<AdminScreen />
+						</Route>
+						<Route path={process.env.REACT_APP_TEST_ADDRESS}>
+							<TestScreen exercises={exercises} setExercises={setExercises} />
+						</Route>
+						<Route>
+							<NotFoundScreen />
+						</Route>
+					</Switch>
+				</ErrorBoundary>
 			</Router>
 		</ThemeProvider>
 	);
