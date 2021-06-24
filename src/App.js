@@ -12,12 +12,14 @@ import firebase, { database } from './utils/firebase';
 import AdminScreen from './screens/AdminScreen';
 import CategoryDetailScreen from './screens/CategoryDetailScreen';
 import HomeScreen from './screens/HomeScreen';
-import LandingScreen from './screens/LandingScreen';
+
 import LetsExercise from './screens/LetsExercise';
 import NotFoundScreen from './screens/NotFoundScreen';
 import RoutineScreen from './screens/RoutineScreen';
 
 import TestScreen from './screens/TestScreen';
+
+import LandingScreen from './screens/LandingScreen'
 
 dotenv.config();
 const theme = createMuiTheme(myTheme);
@@ -30,8 +32,8 @@ function App() {
 	// exercises: [ Exercise ]
 	// Exercise: { created, key, exerciseName, exerciseParts, exerciseSets }
 	// Set: { created, weight, reps, repsUnit, setReps, done, finished  }
-	const [exercises, setExercises] = useState(MOCK_EXERCISES);
-	// const [exercises, setExercises] = useState([]);
+	// const [exercises, setExercises] = useState(MOCK_EXERCISES);
+	const [exercises, setExercises] = useState([]);
 
 	// timeStamp: { launched, started, ended, closed, lastUpdated }
 	const [timeStamp, setTimeStamp] = useState({

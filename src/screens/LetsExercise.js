@@ -8,11 +8,10 @@ import LetsResultScreen from './LetsResultScreen';
 function LetsExercise(props) {
 	const [list, setList] = useState([]);
 	const [index, setIndex] = useState(-1);
-	const [isRest, setIsRest] = useState(false);
 
 	const { flush, exercises, pushExerciseSetInfo, today, handleSubmit } = props;
 
-	console.log('lets get it', exercises);
+	console.log('Lets get it', exercises);
 
 	useEffect(() => {
 		let newList = [];
@@ -47,16 +46,6 @@ function LetsExercise(props) {
 		setIndex(index + 1);
 	};
 
-	const handleExerciseToRest = (done) => {
-		console.log('to the next round!');
-		// const info = list[index];
-		// pushExerciseSetInfo(info.exerciseKey, info.setKey, info.setIndex, {
-		// 	done: done,
-		// 	finished: Date(),
-		// });
-		// setIsRest(true);
-	};
-	
 	const handleNextExercise = (done) => {
 		console.log('to the next round!');
 		const info = list[index];
@@ -64,11 +53,6 @@ function LetsExercise(props) {
 			done: done,
 			finished: Date(),
 		});
-	}
-
-	const handleRestToExercise = () => {
-		setIndex(index + 1);
-		setIsRest(false);
 	};
 
 	const getSetInfo = (i = index) => {
@@ -99,19 +83,29 @@ function LetsExercise(props) {
 
 	const getCurrentScreen = () => {
 		const total = list.length;
-		if (index <= -1) return <LetsStartScreen today={today} exercises={exercises} handleNext={handleNext} />;
+		if (index <= -1)
+			return <LetsStartScreen today={today} exercises={exercises} handleNext={handleNext} />;
 		else if (index <= total - 1) {
-			return <LetsExerciseScreen
-						handleNext={handleNextExercise}
-						getSetInfo={getSetInfo}
-					   index={index}
-					   numList={list.length}
-						flush={flush}
-					   setIndex={setIndex}
-					/>;
+			return (
+				<LetsExerciseScreen
+					handleNext={handleNextExercise}
+					getSetInfo={getSetInfo}
+					index={index}
+					numList={list.length}
+					flush={flush}
+					setIndex={setIndex}
+				/>
+			);
 		} else if (index === total) return <LetsEndScreen handleNext={handleNext} />;
 		else if (index === total + 1)
-			return <LetsResultScreen flush={flush} exercises={exercises} today={today} handleSubmit={handleSubmit}/>;
+			return (
+				<LetsResultScreen
+					flush={flush}
+					exercises={exercises}
+					today={today}
+					handleSubmit={handleSubmit}
+				/>
+			);
 		return 'Something went wrong';
 	};
 

@@ -123,6 +123,8 @@ function LetsExerciseScreen(props) {
 	};
 
 	const handleClick = (done) => {
+		setTicker(0);
+		setIsTicking(true);
 		if (isRest) return setIsRest(false);
 
 		handleNext(done);
@@ -169,7 +171,7 @@ function LetsExerciseScreen(props) {
 				{setInfo.set === null ? null : (
 					<div className={isRest ? classes.setInfoRest : classes.setInfo}>
 						<Typography variant="h6">
-							<b>{isRest ? `다음: ${getSetInfo(index).set}` : setInfo.set}</b>
+							<b>{isRest ? `다음: ${getSetInfo(index).exerciseName} ${getSetInfo(index).set}` : setInfo.set}</b>
 						</Typography>
 					</div>
 				)}
@@ -182,7 +184,7 @@ function LetsExerciseScreen(props) {
 
 					<div className={classes.spacing} />
 					<IconButton onClick={() => handleClick(true)}>
-						<CheckCircleRoundedIcon color={isRest ? '' : 'primary'} className={classes.iconButton} />
+						<CheckCircleRoundedIcon color={isRest ? 'inherit' : 'primary'} className={classes.iconButton} />
 					</IconButton>
 				</div>
 			</div>
