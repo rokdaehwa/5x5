@@ -1,1 +1,1 @@
-export { default } from './LetsExercise';
+export { default } from './LetsExercise.Container';

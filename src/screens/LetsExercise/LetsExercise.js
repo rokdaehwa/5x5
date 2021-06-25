@@ -9,7 +9,7 @@ function LetsExercise(props) {
 	const [list, setList] = useState([]);
 	const [index, setIndex] = useState(-1);
 
-	const { flush, exercises, pushExerciseSetInfo, today, handleSubmit } = props;
+	const { flush, exercises, setDoneOrNot, today, handleSubmit, updateUserEmail } = props;
 
 	console.log('Lets get it', exercises);
 
@@ -49,7 +49,7 @@ function LetsExercise(props) {
 	const handleNextExercise = (done) => {
 		console.log('to the next round!');
 		const info = list[index];
-		pushExerciseSetInfo(info.exerciseKey, info.setKey, info.setIndex, {
+		setDoneOrNot(info.exerciseKey, info.setKey, info.setIndex, {
 			done: done,
 			finished: Date(),
 		});
@@ -104,6 +104,7 @@ function LetsExercise(props) {
 					exercises={exercises}
 					today={today}
 					handleSubmit={handleSubmit}
+					updateUserEmail={updateUserEmail}
 				/>
 			);
 		return 'Something went wrong';

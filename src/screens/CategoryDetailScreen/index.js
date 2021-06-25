@@ -1,1 +1,1 @@
-export { default } from './CategoryDetailScreen';
+export { default } from './CategoryDetailScreen.Container';

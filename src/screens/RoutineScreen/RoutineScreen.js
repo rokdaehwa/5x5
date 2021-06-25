@@ -25,86 +25,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-	},
-	appBar: {
-		flexGrow: 1,
-		backgroundColor: theme.palette.common.white,
-		color: theme.palette.common.black,
-	},
-	toolbar: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
-	trailing: {
-		marginLeft: 'auto',
-	},
-	contentContainer: {
-		width: '100vw',
-		display: 'flex',
-		flexDirection: 'column',
-		padding: theme.spacing(2),
-	},
-	titleContainer: {
-		margin: theme.spacing(2),
-		textAlign: 'center',
-	},
-	exercise: {
-		backgroundColor: theme.palette.common.white,
-		margin: `${theme.spacing(2)}px 0px`,
-	},
-	repsContainer: {
-		display: 'flex',
-		alignItems: 'center',
-		height: '100%',
-	},
-	btnSetReps: {
-		background: theme.palette.common.black + '2a',
-		width: theme.spacing(3),
-		height: theme.spacing(3),
-		margin: theme.spacing(0.5),
-		borderRadius: theme.spacing(0.5),
-		'&:disabled': {
-			color: theme.palette.common.black + '30',
-			background: theme.palette.common.black + '1a',
-		},
-	},
-	btnStartContainer: {
-		width: '100vw',
-		height: '15vh',
-		position: 'fixed',
-		left: 0,
-		bottom: 0,
-		background: 'linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FAFAFA 100%)',
-	},
-	btnStart: {
-		width: '75vw',
-		position: 'fixed',
-		left: '12.5vw',
-		bottom: theme.spacing(4),
-	},
-	fakeListItem: {
-		height: 48, // height hard-coded
-	},
-	dialogInputContainer: {
-		display: 'flex',
-		padding: `0px ${theme.spacing(2)}px`,
-		'& > *': {
-			marginRight: theme.spacing(2),
-		},
-	},
-	dialogInput: {
-		width: `calc(100vw - ${2 * theme.spacing(2)}px)`,
-		border: `0.5px solid ${theme.palette.common.grey}`,
-		padding: theme.spacing(1.5),
-		boxSizing: 'border-box',
-		borderRadius: theme.spacing(0.5),
-	},
-}));
+import { useStyles } from './styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -133,7 +54,8 @@ function RoutineScreen(props) {
 	const {
 		today,
 		exercises,
-		handleSetReps,
+		incrementSetReps,
+		decrementSetReps,
 		deleteExercise,
 		deleteExerciseSet,
 		addExerciseSet,
@@ -143,20 +65,20 @@ function RoutineScreen(props) {
 
 	const onDragEnd = (result) => {
 		setIsDragging(false);
-		
+
 		// dropped outside the list
 		if (!result.destination) {
 			return;
 		}
 
 		const newItems = reorder(exercises, result.source.index, result.destination.index);
-		
+
 		setExercises(newItems);
 	};
-	
+
 	const onDragStart = () => {
 		setIsDragging(true);
-	}
+	};
 
 	return (
 		<div>
@@ -311,8 +233,7 @@ function RoutineScreen(props) {
 																				classes.btnSetReps
 																			}
 																			onClick={() =>
-																				handleSetReps(
-																					'decrement',
+																				decrementSetReps(
 																					exercise.key,
 																					set.key
 																				)
@@ -329,8 +250,7 @@ function RoutineScreen(props) {
 																				classes.btnSetReps
 																			}
 																			onClick={() =>
-																				handleSetReps(
-																					'increment',
+																				incrementSetReps(
 																					exercise.key,
 																					set.key
 																				)

@@ -25,8 +25,6 @@ function HomeScreen(props) {
 	const title = '반갑습니다!';
 	const hint = '어떤 운동으로 시작해볼까요?';
 	
-	console.log('home!', userName)
-
 	return (
 		<div className={classes.root}>
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">

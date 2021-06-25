@@ -105,7 +105,7 @@ const isValidEmail = (email) => {
 function LetsResultScreen(props) {
 	const classes = useStyles();
 	const componentRef = useRef();
-	const { exercises, flush, today, handleSubmit } = props;
+	const { exercises, flush, today, handleSubmit, updateUserEmail } = props;
 	const [inputApply, setInputApply] = useState('');
 	const [applied, setApplied] = useState(false);
 
@@ -219,7 +219,7 @@ function LetsResultScreen(props) {
 						<InputAdornment position="end">
 							<IconButton
 								onClick={() => {
-									handleSubmit(inputApply);
+									updateUserEmail(inputApply);
 									setApplied(true);
 								}}
 								disabled={!isValidEmail(inputApply) || applied}

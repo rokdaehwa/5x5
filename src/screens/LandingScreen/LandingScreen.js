@@ -14,7 +14,6 @@ import { useStyles } from './styles';
 function LandingScreen(props) {
 	const classes = useStyles();
 	const { userName, updateUserName } = props;
-	console.log(props)
 
 	return (
 		<div className={classes.root}>
