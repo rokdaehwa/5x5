@@ -66,7 +66,7 @@ function HomeScreen(props) {
 							<Card
 								elevation={0}
 								className={classes.card}
-								onClick={() => console.log('ghi1')}
+								onClick={() => console.log('card detail')}
 							>
 								<CardHeader
 									action={

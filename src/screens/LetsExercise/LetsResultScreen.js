@@ -19,6 +19,8 @@ import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 
+import firebase, { database } from 'utils/firebase';
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
@@ -105,9 +107,27 @@ const isValidEmail = (email) => {
 function LetsResultScreen(props) {
 	const classes = useStyles();
 	const componentRef = useRef();
-	const { exercises, flush, today, handleSubmit, updateUserEmail } = props;
+	const { exercises, flush, today, updateUserEmail, state } = props;
 	const [inputApply, setInputApply] = useState('');
 	const [applied, setApplied] = useState(false);
+
+	const handleSubmit = () => {
+		console.log('Submit started...', state);
+		updateUserEmail(inputApply);
+		setApplied(true);
+		const collRef = database.collection('BetaTest');
+		return collRef
+			.add({
+				userEmail: inputApply,
+				...state,
+			})
+			.then((docRef) => {
+				console.log('Document written with ID: ', docRef.id);
+			})
+			.catch((error) => {
+				console.error('Error adding document: ', error);
+			});
+	};
 
 	return (
 		<div>
@@ -218,10 +238,7 @@ function LetsResultScreen(props) {
 					endAdornment={
 						<InputAdornment position="end">
 							<IconButton
-								onClick={() => {
-									updateUserEmail(inputApply);
-									setApplied(true);
-								}}
+								onClick={handleSubmit}
 								disabled={!isValidEmail(inputApply) || applied}
 								color="primary"
 							>

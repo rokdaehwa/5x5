@@ -11,7 +11,9 @@ function LetsExerciseContainer(props) {
 
 const mapStateToProps = (state) => ({
 	exercises: state.routine,
+	today: state.profile.today,
 	userEmail: state.profile.userEmail,
+	state,
 });
 
 const mapDispatchToProps = { setDoneOrNot, flush, updateUserEmail };

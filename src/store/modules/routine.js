@@ -17,6 +17,10 @@ const FLUSH = 'exercise/FLUSH';
 
 export const addExercise = createAction(ADD_EXERCISE, (key) => key);
 export const deleteExercise = createAction(DELETE_EXERCISE, (key) => key);
+export const reorderExercise = createAction(REORDER_EXERCISE, (startIndex, endIndex) => ({
+	startIndex,
+	endIndex,
+}));
 export const addExerciseSet = createAction(ADD_EXERCISE_SET, (key, info) => ({
 	key,
 	info,
@@ -72,6 +76,15 @@ export default handleActions(
 		[DELETE_EXERCISE]: (state, action) => {
 			if (action.payload === null) return state;
 			return state.filter((item) => item.key !== action.payload);
+		},
+		[REORDER_EXERCISE]: (state, action) => {
+			let result = [...state];
+			// console.log('action', state);
+			// const [removed] = result.splice(action.payload.startIndex, 1);
+			// console.log('action - removed', removed);
+			// result.splice(action.payload.endIndex, 0, removed);
+			// console.log('action - reorder', result);
+			return result;
 		},
 		[ADD_EXERCISE_SET]: (state, action) => {
 			const key = action.payload.key;

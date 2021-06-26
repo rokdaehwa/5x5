@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
 	addExerciseSet,
 	deleteExercise,
+	reorderExercise,
 	deleteExerciseSet,
 	updateExerciseSet,
 	incrementSetReps,
@@ -17,11 +18,13 @@ function RoutineScreenContainer(props) {
 
 const mapStateToProps = (state) => ({
 	exercises: state.routine,
+	today: state.profile.today,
 });
 
 const mapDispatchToProps = {
 	addExerciseSet,
 	deleteExercise,
+	reorderExercise,
 	deleteExerciseSet,
 	updateExerciseSet,
 	incrementSetReps,

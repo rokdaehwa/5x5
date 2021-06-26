@@ -27,95 +27,20 @@ const theme = createMuiTheme(myTheme);
 function App() {
 	const [exercises, setExercises] = useState([]);
 
-	// timeStamp: { launched, started, ended, closed, lastUpdated }
-	const [timeStamp, setTimeStamp] = useState({
-		lauched: null,
-		started: null,
-		ended: null,
-		closed: null,
-		lastUpdated: null,
-	});
-
-	// userInfo: { userName, userEmail }
-	const [userInfo, setUserInfo] = useState({
-		userName: '',
-		userEmail: '',
-	});
-
-	const date = new Date();
-	const today = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-
-	const flush = () => {
-		setExercises((before) => {
-			let tmpExercises = [...before];
-			tmpExercises.forEach((item) => {
-				item.done = null;
-				item.finished = null;
-				item.exerciseSets.forEach((set) => {
-					set.done = [];
-					set.finished = [];
-				});
-			});
-			console.log('flush!', tmpExercises);
-			return tmpExercises;
-		});
-	};
-
-	const handleSubmit = (userEmail) => {
-		console.log('Submit started...');
-		setUserInfo({ ...userInfo, userEmail });
-		const collRef = database.collection('BetaTest');
-		return collRef
-			.add({
-				userEmail,
-				exercises,
-				timeStamp,
-			})
-			.then((docRef) => {
-				console.log('Document written with ID: ', docRef.id);
-			})
-			.catch((error) => {
-				console.error('Error adding document: ', error);
-			});
-	};
-
 	return (
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<Router>
 				<ErrorBoundary>
 					<Switch>
-						<Route path="/" exact>
-							<HomeScreen />
-						</Route>
-						<Route path="/hello" exact>
-							<LandingScreen />
-						</Route>
-						<Route path="/routine" exact>
-							<RoutineScreen
-								today={today}
-								setExercises={setExercises}
-							/>
-						</Route>
-						<Route path="/category/:to" exact>
-							<CategoryDetailScreen />
-						</Route>
-						<Route path="/exercise" exact>
-							<LetsExercise
-								handleSubmit={handleSubmit}
-								today={today}
-								flush={flush}
-							/>
-						</Route>
-						<Route path={process.env.REACT_APP_ADMIN_ADDRESS}>
-							<AdminScreen />
-						</Route>
-						<Route path={process.env.REACT_APP_TEST_ADDRESS}>
-							<TestScreen />
-						</Route>
-						<Route>
-							<NotFoundScreen />
-						</Route>
+						<Route path="/" exact component={HomeScreen} />
+						<Route path="/hello" exact component={LandingScreen} />
+						<Route path="/routine" exact component={RoutineScreen} />
+						<Route path="/category/:to" exact component={CategoryDetailScreen} />
+						<Route path="/exercise" exact component={LetsExercise} />
+						<Route path={process.env.REACT_APP_ADMIN_ADDRESS} component={AdminScreen} />
+						<Route path={process.env.REACT_APP_TEST_ADDRESS} component={TestScreen} />
+						<Route component={NotFoundScreen} />
 					</Switch>
 				</ErrorBoundary>
 			</Router>

@@ -54,13 +54,14 @@ function RoutineScreen(props) {
 	const {
 		today,
 		exercises,
+		addExerciseSet,
+		deleteExercise,
+		reorderExercise,
+		deleteExerciseSet,
+		updateExerciseSet,
 		incrementSetReps,
 		decrementSetReps,
-		deleteExercise,
-		deleteExerciseSet,
-		addExerciseSet,
-		updateExerciseSet,
-		setExercises,
+		setDoneOrNot,
 	} = props;
 
 	const onDragEnd = (result) => {
@@ -73,7 +74,7 @@ function RoutineScreen(props) {
 
 		const newItems = reorder(exercises, result.source.index, result.destination.index);
 
-		setExercises(newItems);
+		reorderExercise(result.source.index, result.destination.index);
 	};
 
 	const onDragStart = () => {
@@ -298,8 +299,10 @@ function RoutineScreen(props) {
 										</Draggable>
 									);
 								})}
+								{provided.placeholder}
 							</List>
 						)}
+						
 					</Droppable>
 				</DragDropContext>
 			</div>
