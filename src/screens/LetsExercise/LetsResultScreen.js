@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { exportComponentAsPNG } from 'react-component-export-image';
 import { makeStyles } from '@material-ui/core/styles';
@@ -86,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(1),
 		boxSizing: 'border-box',
 		borderRadius: theme.spacing(0.5),
+		lineHeight: 1.25,
 	},
 }));
 
@@ -107,9 +108,20 @@ const isValidEmail = (email) => {
 function LetsResultScreen(props) {
 	const classes = useStyles();
 	const componentRef = useRef();
-	const { exercises, flush, today, updateUserEmail, state } = props;
+	const { list, exercises, flush, today, updateUserEmail, state } = props;
 	const [inputApply, setInputApply] = useState('');
+	const [inputComment, setInputComment] = useState('');
 	const [applied, setApplied] = useState(false);
+	const [exporting, setExporting] = useState(false);
+	
+	console.log('list', list);
+	
+	useEffect(() => {
+		if (exporting) {
+			exportComponentAsPNG(componentRef);
+		}
+		setExporting(false);
+	}, [exporting])
 
 	const handleSubmit = () => {
 		console.log('Submit started...', state);
@@ -118,6 +130,7 @@ function LetsResultScreen(props) {
 		const collRef = database.collection('BetaTest');
 		return collRef
 			.add({
+				comment: inputComment,
 				userEmail: inputApply,
 				...state,
 			})
@@ -129,6 +142,12 @@ function LetsResultScreen(props) {
 			});
 	};
 
+	const handleExport = () => {
+		setExporting(true);
+	};
+	
+	const rate = list.length === 0 ? '-' : list.filter((item) => item.done).length / list.length;
+
 	return (
 		<div>
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
@@ -138,7 +157,7 @@ function LetsResultScreen(props) {
 					</IconButton>
 					<IconButton
 						className={classes.trailing}
-						onClick={() => exportComponentAsPNG(componentRef)}
+						onClick={handleExport}
 					>
 						<GetAppRoundedIcon />
 					</IconButton>
@@ -156,6 +175,7 @@ function LetsResultScreen(props) {
 						<b>루틴 결과</b>
 					</Typography>
 					<Typography>{`${exercises.length}가지의 운동`}</Typography>
+					<Typography><b>{`${parseInt(rate * 100)}% 달성!`}</b></Typography>
 				</div>
 
 				<List>
@@ -219,6 +239,31 @@ function LetsResultScreen(props) {
 							</div>
 						);
 					})}
+					<Typography gutterBottom>
+						<b>
+							오늘의 운동 한줄평{' '}
+							<span role="img" aria-label="thumb">
+								👍
+							</span>
+						</b>
+					</Typography>
+
+					{exporting ? (
+						<div className={classes.inputBase}>
+							{inputComment.split('\n').map((item, key) => (
+								<Typography key={key}>{item}</Typography>
+							))}
+						</div>
+					) : (
+						<InputBase
+							multiline
+							className={classes.inputBase}
+							disabled={applied}
+							type="text"
+							value={inputComment}
+							onChange={(e) => setInputComment(e.target.value)}
+						/>
+					)}
 				</List>
 			</div>
 

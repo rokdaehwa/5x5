@@ -171,22 +171,40 @@ function LetsExerciseScreen(props) {
 				{setInfo.set === null ? null : (
 					<div className={isRest ? classes.setInfoRest : classes.setInfo}>
 						<Typography variant="h6">
-							<b>{isRest ? `다음: ${getSetInfo(index).exerciseName} ${getSetInfo(index).set}` : setInfo.set}</b>
+							<b>
+								{isRest
+									? `다음: ${getSetInfo(index).exerciseName} ${
+											getSetInfo(index).set
+									  }`
+									: setInfo.set}
+							</b>
 						</Typography>
 					</div>
 				)}
-				<div className={classes.controlContainer}>
-					{isRest ? null : (
+				{isRest ? (
+					<div className={classes.controlContainer}>
+						<IconButton onClick={() => handleClick(true)}>
+							<CheckCircleRoundedIcon
+								color={'inherit'}
+								className={classes.iconButton}
+							/>
+						</IconButton>
+					</div>
+				) : (
+					<div className={classes.controlContainer}>
 						<IconButton onClick={() => handleClick(false)}>
 							<HighlightOffRoundedIcon color="error" className={classes.iconButton} />
 						</IconButton>
-					)}
 
-					<div className={classes.spacing} />
-					<IconButton onClick={() => handleClick(true)}>
-						<CheckCircleRoundedIcon color={isRest ? 'inherit' : 'primary'} className={classes.iconButton} />
-					</IconButton>
-				</div>
+						<div className={classes.spacing} />
+						<IconButton onClick={() => handleClick(true)}>
+							<CheckCircleRoundedIcon
+								color={'primary'}
+								className={classes.iconButton}
+							/>
+						</IconButton>
+					</div>
+				)}
 			</div>
 		</div>
 	);

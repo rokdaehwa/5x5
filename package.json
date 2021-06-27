@@ -8,6 +8,7 @@
     "@material-ui/lab": "^4.0.0-alpha.58",
     "firebase": "^8.6.2",
     "firebase-tools": "^9.12.0",
+    "hangul-js": "^0.2.6",
     "material-ui-chip-input": "^1.1.0",
     "react": "^17.0.2npm ",
     "react-beautiful-dnd": "^13.1.0",

@@ -3,7 +3,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 // for Nested DnD - https://codesandbox.io/s/jp4ow4r45v?file=/index.js
 
-import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -31,13 +30,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const reorder = (list, startIndex, endIndex) => {
-	let result = list;
-	const [removed] = result.splice(startIndex, 1);
-	result.splice(endIndex, 0, removed);
-	return result;
-};
-
 function RoutineScreen(props) {
 	const classes = useStyles();
 	const history = useHistory();
@@ -61,7 +53,6 @@ function RoutineScreen(props) {
 		updateExerciseSet,
 		incrementSetReps,
 		decrementSetReps,
-		setDoneOrNot,
 	} = props;
 
 	const onDragEnd = (result) => {
@@ -71,8 +62,6 @@ function RoutineScreen(props) {
 		if (!result.destination) {
 			return;
 		}
-
-		const newItems = reorder(exercises, result.source.index, result.destination.index);
 
 		reorderExercise(result.source.index, result.destination.index);
 	};
@@ -378,7 +367,7 @@ function RoutineScreen(props) {
 						className={classes.dialogInput}
 						autoFocus
 						type="number"
-						inputProps={{ inputMode: 'numeric', style: { textAlign: 'right' } }}
+						inputProps={{ inputMode: 'decimal', style: { textAlign: 'right' } }}
 						placeholder="00"
 						endAdornment={<InputAdornment position="end">kg</InputAdornment>}
 						value={inputWeight}
@@ -387,7 +376,7 @@ function RoutineScreen(props) {
 					<InputBase
 						className={classes.dialogInput}
 						type="number"
-						inputProps={{ inputMode: 'numeric', style: { textAlign: 'right' } }}
+						inputProps={{ inputMode: 'decimal', style: { textAlign: 'right' } }}
 						placeholder="00"
 						endAdornment={
 							<InputAdornment position="end">

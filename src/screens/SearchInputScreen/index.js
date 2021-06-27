@@ -1,1 +1,1 @@
-export { default } from './SearchInputScreen';
+export { default } from './SearchInputScreen.Container';

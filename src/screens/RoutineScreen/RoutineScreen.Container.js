@@ -8,7 +8,6 @@ import {
 	updateExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
-	setDoneOrNot
 } from 'store/modules/routine';
 import RoutineScreen from './RoutineScreen';
 
@@ -29,7 +28,6 @@ const mapDispatchToProps = {
 	updateExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
-	setDoneOrNot
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutineScreenContainer);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Card from '@material-ui/core/Card';
@@ -8,28 +8,32 @@ import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined';
+import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 
 import CategoryDrawer from 'components/CategoryDrawer';
-import { RECOMMENDED_EXERCISES } from 'utils/data.js';
+import { RECOMMENDED_EXERCISES } from 'utils/data';
 
 import { useStyles } from './styles';
 
 function HomeScreen(props) {
 	const classes = useStyles();
+	const history = useHistory();
 	const { numExercises, addExercise, userName } = props;
 	const [navOpen, setNavOpen] = useState(false);
 	// TODO: exercise.length 따라서 hint text 바꿔보자
 	const title = '반갑습니다!';
 	const hint = '어떤 운동으로 시작해볼까요?';
-	
+
 	return (
 		<div className={classes.root}>
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 				<Toolbar>
-					<Typography><b>{userName === '' || `${userName}님, ${title}`}</b></Typography>
+					<Typography>
+						<b>{userName === '' || `${userName}님, ${title}`}</b>
+					</Typography>
 					<IconButton className={classes.trailing} component={Link} to="/routine">
 						<Badge badgeContent={numExercises} color="primary">
 							<LocalMallOutlinedIcon />
@@ -41,7 +45,7 @@ function HomeScreen(props) {
 						<b>운동</b>
 					</Typography>
 					<IconButton onClick={() => setNavOpen(true)}>
-						<CategoryOutlinedIcon />
+						<CategoryRoundedIcon />
 					</IconButton>
 				</Toolbar>
 			</AppBar>
@@ -49,9 +53,9 @@ function HomeScreen(props) {
 			<Toolbar />
 			<Toolbar />
 
-			<div className={classes.textField} onClick={() => setNavOpen(true)}>
-				{hint}
-			</div>
+			<Link to="/search" className={classes.link}>
+				<div className={classes.textField}>{hint}</div>
+			</Link>
 
 			<Toolbar />
 
@@ -61,12 +65,16 @@ function HomeScreen(props) {
 
 			<div className={classes.recommendedContainer}>
 				{RECOMMENDED_EXERCISES.map((item) => {
+					// onClick={() => history.push(`/detail/${item.key}`)}
 					return (
 						<div className={classes.recommendedCard} key={item.key}>
 							<Card
-								elevation={0}
+								elevation={10}
 								className={classes.card}
-								onClick={() => console.log('card detail')}
+								style={{
+									background: `linear-gradient(#ffffff33, #22222277), url(${item.imgUrl})`,
+									backgroundSize: 'cover',
+								}}
 							>
 								<CardHeader
 									action={
@@ -74,15 +82,13 @@ function HomeScreen(props) {
 											color="primary"
 											onClick={() => addExercise(item.key)}
 										>
-											<AddCircleIcon />
+											<AddCircleRoundedIcon className={classes.iconButton} />
 										</IconButton>
 									}
 								/>
 								<div className={classes.space}></div>
 								<CardContent>
-									<Typography color="textSecondary">
-										{item.exerciseParts.join(', ')}
-									</Typography>
+									<Typography>{item.exerciseParts.join(', ')}</Typography>
 									<Typography>
 										<b>{item.exerciseName}</b>
 									</Typography>
@@ -93,7 +99,7 @@ function HomeScreen(props) {
 				})}
 			</div>
 
-			<CategoryDrawer open={navOpen} setOpen={setNavOpen}/>
+			<CategoryDrawer open={navOpen} setOpen={setNavOpen} />
 		</div>
 	);
 }

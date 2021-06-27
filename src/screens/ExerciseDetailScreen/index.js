@@ -1,1 +1,1 @@
-export { default } from './ExerciseDetailScreen';
+export { default } from './ExerciseDetailScreen.Container';

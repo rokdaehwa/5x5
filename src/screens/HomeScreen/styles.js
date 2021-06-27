@@ -19,6 +19,9 @@ export const useStyles = makeStyles((theme) => ({
 	trailing: {
 		marginLeft: 'auto',
 	},
+	link: {
+		textDecoration: 'none'
+	},
 	textField: {
 		width: `calc(100vw - ${2 * theme.spacing(2)}px)`,
 		border: `0.5px solid ${theme.palette.common.grey}`,
@@ -33,25 +36,27 @@ export const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(2),
 	},
 	recommendedContainer: {
-		flex: 1,
+		// flex: 1,
 		display: 'flex',
 		flexWrap: 'nowrap',
 		overflow: 'scroll',
 		width: '100vw',
-		paddingLeft: theme.spacing(2),
 		marginTop: theme.spacing(4),
-		marginLeft: theme.spacing(2),
+		paddingBottom: theme.spacing(4),
 	},
 	recommendedCard: {
 		width: '60vw',
-		marginRight: theme.spacing(4),
-		height: '100vw',
+		margin: theme.spacing(2),
 		flex: 'none',
 	},
-
 	card: {
 		borderRadius: theme.spacing(4),
 		backgroundColor: theme.palette.common.black + '0a',
+		color: theme.palette.common.white,
+	},
+	iconButton: {
+		width: 40,
+		height: 40,
 	},
 	space: {
 		width: '100%',

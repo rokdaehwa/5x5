@@ -49,6 +49,14 @@ function LetsExercise(props) {
 	const handleNextExercise = (done) => {
 		console.log('to the next round!');
 		const info = list[index];
+		setList(
+			list.map((item, i) => {
+				if (i === index) {
+					item.done = done;
+				}
+				return item;
+			})
+		);
 		setDoneOrNot(info.exerciseKey, info.setKey, info.setIndex, {
 			done: done,
 			finished: Date(),
@@ -100,6 +108,7 @@ function LetsExercise(props) {
 		else if (index === total + 1)
 			return (
 				<LetsResultScreen
+					list={list}
 					flush={flush}
 					exercises={exercises}
 					today={today}

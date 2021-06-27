@@ -34,7 +34,7 @@ function LandingScreen(props) {
 			</div>
 
 			<div className={classes.btnStartContainer}>
-				<Typography variant='body2'>닉네임으로 시작하기(2글자 이상)</Typography>
+				<Typography variant='body2'>닉네임으로 체험하기(2글자 이상)</Typography>
 				<InputBase
 					className={classes.inputBase}
 					placeholder="마포구 보안관"

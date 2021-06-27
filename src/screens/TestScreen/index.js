@@ -1,1 +1,1 @@
-export { default } from './TestScreen';
+export { default } from './TestScreen.Container';

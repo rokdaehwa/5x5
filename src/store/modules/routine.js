@@ -34,6 +34,14 @@ export const updateExerciseSet = createAction(UPDATE_EXERCISE_SET, (exerciseKey,
 	setKey,
 	info,
 }));
+export const reorderExerciseSet = createAction(
+	REORDER_EXERCISE_SET,
+	(exerciseKey, startIndex, endIndex) => ({
+		exerciseKey,
+		startIndex,
+		endIndex,
+	})
+);
 export const incrementSetReps = createAction(INCREMENT_SET_REPS, (exerciseKey, setKey) => ({
 	exerciseKey,
 	setKey,
@@ -53,8 +61,8 @@ export const setDoneOrNot = createAction(
 );
 export const flush = createAction(FLUSH);
 
-const initialState = MOCK_EXERCISES;
-// const initialState = [];
+// const initialState = MOCK_EXERCISES;
+const initialState = [];
 
 export default handleActions(
 	{
@@ -62,6 +70,7 @@ export default handleActions(
 			if (action.payload === null) return state;
 			const newExercise = EXERCISE_DATA.find((item) => item.key === action.payload);
 			if (newExercise === null) return state; // no such item
+			console.log(newExercise);
 			const newExerciseItem = {
 				created: Date(),
 				key: Date.now(),
@@ -79,11 +88,11 @@ export default handleActions(
 		},
 		[REORDER_EXERCISE]: (state, action) => {
 			let result = [...state];
-			// console.log('action', state);
-			// const [removed] = result.splice(action.payload.startIndex, 1);
-			// console.log('action - removed', removed);
-			// result.splice(action.payload.endIndex, 0, removed);
-			// console.log('action - reorder', result);
+			console.log('action', state);
+			const [removed] = result.splice(action.payload.startIndex, 1);
+			console.log('action - removed', removed);
+			result.splice(action.payload.endIndex, 0, removed);
+			console.log('action - reorder', result);
 			return result;
 		},
 		[ADD_EXERCISE_SET]: (state, action) => {
