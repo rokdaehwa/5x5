@@ -1,117 +1,181 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar } from '@material-ui/core';
-import Badge from '@material-ui/core/Badge';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputBase from '@material-ui/core/InputBase';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
-import CancelIcon from '@material-ui/icons/Cancel';
-import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
-import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+	const result = Array.from(list);
+	const [removed] = result.splice(startIndex, 1);
+	result.splice(endIndex, 0, removed);
+	return result;
+};
 
-import { EXERCISE_DATA } from 'utils/data';
-
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
+const static_items = [
+	{
+		key: '1',
+		content: 'item 1 content',
+		exerciseSets: [
+			{
+				key: '10',
+				content: 'SubItem 10 content',
+			},
+			{
+				key: '11',
+				content: 'SubItem 11 content',
+			},
+		],
 	},
-	appBar: {
-		flexGrow: 1,
-		backgroundColor: theme.palette.common.white,
-		color: theme.palette.common.black,
+	{
+		key: '2',
+		content: 'item 2 content',
+		exerciseSets: [
+			{
+				key: '20',
+				content: 'SubItem 20 content',
+			},
+			{
+				key: '21',
+				content: 'SubItem 21 content',
+			},
+		],
 	},
-	toolbar: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
-}));
+];
 
-function SearchInputScreen(props) {
-	const { numExercises } = props;
-	const [searchInput, setSearchInput] = useState('');
-	const classes = useStyles();
-	const history = useHistory();
-	const inputRef = React.useRef();
-
-	const handleChange = (e) => {
-		setSearchInput(e.target.value);
-	};
-
-	const resetInput = () => {
-		inputRef.current.focus();
-		setSearchInput('');
-	};
-
-	const exerciseFilter = (item) => {
-		const input = searchInput.replace(/\s/g, '');
-		if (input === '') return item;
-		if (item.exerciseName.replace(/\s/g, '').includes(input)) return item;
-		if (item.exerciseParts.join('').includes(input)) return item;
-	};
+const ServiceCommandUnit = (props) => {
+	// Normally you would want to split things out into separate components.
+	// But in this example everything is just done in one place for simplicity
 
 	return (
-		<div>
-			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
-				<Toolbar>
-					<IconButton onClick={() => history.goBack()}>
-						<ArrowBackIosOutlinedIcon />
-					</IconButton>
-					<form action={`/test-rokdaehwa/${searchInput}/`}>
-						<InputBase
-							inputRef={inputRef}
-							placeholder="운동 이름, 부위 입력"
-							inputProps={{ 'aria-label': 'search' }}
-							value={searchInput}
-							type="text"
-							endAdornment={
-								<InputAdornment>
-									<IconButton onClick={resetInput}>
-										<CancelIcon />
-									</IconButton>
-								</InputAdornment>
-							}
-							autoFocus
-							onChange={handleChange}
-						/>
-					</form>
-					<IconButton>
-						<Badge badgeContent={numExercises} color="primary">
-							<LocalMallOutlinedIcon />
-						</Badge>
-					</IconButton>
-				</Toolbar>
-			</AppBar>
+		<Droppable droppableId={props.type} type={`droppableSubItem-${props.type}`}>
+			{(provided, snapshot) => (
+				<div ref={provided.innerRef}>
+					{props.subItems.map((item, index) => (
+						<Draggable key={item.key} draggableId={item.key} index={index}>
+							{(provided, snapshot) => (
+								<div style={{ display: 'flex' }}>
+									<div
+										ref={provided.innerRef}
+										{...provided.draggableProps}
+										{...provided.dragHandleProps}
+									>
+										{`${item.weight}`}
+									</div>
+									{provided.placeholder}
+								</div>
+							)}
+						</Draggable>
+					))}
+					{provided.placeholder}
+				</div>
+			)}
+		</Droppable>
+	);
+};
 
-			<Toolbar />
+function TestScreen(props) {
+	const [items, setItems] = useState(static_items);
+	
+	useEffect(() => {
+		const exercises = props.exercises;
+		if (exercises === undefined) return;
+		setItems(exercises);
+	}, []);
 
-			<List>
-				{EXERCISE_DATA.filter(exerciseFilter).map((item) => {
-					return (
-						<ListItem key={item.key} button>
-							<ListItemText
-								primary={item.exerciseName}
-								secondary={item.exerciseParts.join(', ')}
-							/>
-							<ListItemSecondaryAction>
-								<ChevronRightRoundedIcon />
-							</ListItemSecondaryAction>
-						</ListItem>
-					);
-				})}
-			</List>
-		</div>
+	const onDragEnd = (result) => {
+		if (!result.destination) {
+			return;
+		}
+		if (result.type === 'droppableItem') {
+			const newItems = reorder(items, result.source.index, result.destination.index);
+			setItems(newItems);
+		} else if (result.type.includes('droppableSubItem')) {
+			const parentId = parseInt(result.type.split('-')[1]);
+			const itemSubItemMap = items.reduce((acc, item) => {
+				acc[item.key] = item.exerciseSets;
+				return acc;
+			}, {});
+			const subItemsForCorrespondingParent = itemSubItemMap[parentId];
+			const reorderedSubItems = reorder(
+				subItemsForCorrespondingParent,
+				result.source.index,
+				result.destination.index
+			);
+			let newItems = [...items];
+			newItems = newItems.map((item) => {
+				if (item.key === parentId) {
+					item.subItems = reorderedSubItems;
+				}
+				return item;
+			});
+			setItems(newItems);
+		}
+	};
+
+	// Normally you would want to split things out into separate components.
+	// But in this example everything is just done in one place for simplicity
+	return (
+		<DragDropContext onDragEnd={onDragEnd}>
+			<Droppable droppableId="droppable" type="droppableItem">
+				{(provided, snapshot) => (
+					<div ref={provided.innerRef}>
+						{items.map((item, index) => (
+							<Draggable key={item.key} draggableId={item.key} index={index}>
+								{(provided, snapshot) => (
+									<div>
+										<div
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+										>
+											{item.exerciseName}
+											<ServiceCommandUnit
+												subItems={item.exerciseSets}
+												type={item.key}
+											/>
+										</div>
+										{provided.placeholder}
+									</div>
+								)}
+							</Draggable>
+						))}
+						{provided.placeholder}
+					</div>
+				)}
+			</Droppable>
+		</DragDropContext>
 	);
 }
 
-export default SearchInputScreen;
+export default TestScreen;
+
+/* 
+	<DragDropContext onDragEnd={this.onDragEnd}>
+			<Droppable droppableId="droppable" type="droppableItem">
+			  {(provided, snapshot) => (
+				<div ref={provided.innerRef}>
+				  {this.state.items.map((item, index) => (
+					<Draggable key={item.id} draggableId={item.id} index={index}>
+					  {(provided, snapshot) => (
+						<div>
+						  <div ref={provided.innerRef} {...provided.draggableProps}>
+							{item.content}
+							<span
+							  {...provided.dragHandleProps}
+							>
+							  Drag !
+							</span>
+							<ServiceCommandUnit
+							  subItems={item.subItems}
+							  type={item.id}
+							/>
+						  </div>
+						  {provided.placeholder}
+						</div>
+					  )}
+					</Draggable>
+				  ))}
+				  {provided.placeholder}
+				</div>
+			  )}
+			</Droppable>
+		  </DragDropContext>
+*/

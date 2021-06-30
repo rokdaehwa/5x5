@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
@@ -23,9 +24,46 @@ function HomeScreen(props) {
 	const history = useHistory();
 	const { numExercises, addExercise, userName } = props;
 	const [navOpen, setNavOpen] = useState(false);
-	// TODO: exercise.length 따라서 hint text 바꿔보자
+	const [snackbar, setSnackbar] = useState({
+		exercise: '',
+		open: false,
+	});
+	// TODO: 운동 개수 따라서 hint text 바꿔보자
 	const title = '반갑습니다!';
 	const hint = '어떤 운동으로 시작해볼까요?';
+
+	const handleAddExercise = (key, exerciseName) => (e) => {
+		addExercise(key);
+		setSnackbar({
+			exercise: exerciseName,
+			open: true,
+		});
+	};
+	
+	const handleNavOpen = () => {
+		setNavOpen(true);
+	}
+	
+	const handleNavClose = () => {
+		setNavOpen(false);
+	}
+
+	const handleSnackOpen = () => {
+		setSnackbar({
+			...snackbar,
+			open: true,
+		});
+	};
+
+	const handleSnackClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSnackbar({
+			...snackbar,
+			open: false,
+		});
+	};
 
 	return (
 		<div className={classes.root}>
@@ -44,7 +82,7 @@ function HomeScreen(props) {
 					<Typography variant="h5" className={classes.typography}>
 						<b>운동</b>
 					</Typography>
-					<IconButton onClick={() => setNavOpen(true)}>
+					<IconButton onClick={handleNavOpen}>
 						<CategoryRoundedIcon />
 					</IconButton>
 				</Toolbar>
@@ -53,9 +91,7 @@ function HomeScreen(props) {
 			<Toolbar />
 			<Toolbar />
 
-			<Link to="/search" className={classes.link}>
-				<div className={classes.textField}>{hint}</div>
-			</Link>
+				<div className={classes.textField} onClick={handleNavOpen}>{hint}</div>
 
 			<Toolbar />
 
@@ -65,7 +101,6 @@ function HomeScreen(props) {
 
 			<div className={classes.recommendedContainer}>
 				{RECOMMENDED_EXERCISES.map((item) => {
-					// onClick={() => history.push(`/detail/${item.key}`)}
 					return (
 						<div className={classes.recommendedCard} key={item.key}>
 							<Card
@@ -79,8 +114,9 @@ function HomeScreen(props) {
 								<CardHeader
 									action={
 										<IconButton
+											name={item.key}
 											color="primary"
-											onClick={() => addExercise(item.key)}
+											onClick={handleAddExercise(item.key, item.exerciseName)}
 										>
 											<AddCircleRoundedIcon className={classes.iconButton} />
 										</IconButton>
@@ -99,7 +135,18 @@ function HomeScreen(props) {
 				})}
 			</div>
 
-			<CategoryDrawer open={navOpen} setOpen={setNavOpen} />
+			<CategoryDrawer open={navOpen} handleClose={handleNavClose} />
+			<Snackbar
+				open={snackbar.open}
+				onClose={handleSnackClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				autoHideDuration={2000}
+			>
+				<div className={classes.snackbar}>{`${snackbar.exercise} 추가되었습니다.`}</div>
+			</Snackbar>
 		</div>
 	);
 }

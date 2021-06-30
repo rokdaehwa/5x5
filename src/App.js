@@ -5,6 +5,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { myTheme } from 'utils/theme';
 
+import AddExerciseScreen from 'screens/AddExerciseScreen';
 import AdminScreen from 'screens/AdminScreen';
 import CategoryDetailScreen from 'screens/CategoryDetailScreen';
 import ExerciseDetailScreen from 'screens/ExerciseDetailScreen';
@@ -37,6 +38,7 @@ function App() {
 						<Route path="/routine" exact component={RoutineScreen} />
 						<Route path="/search" exact component={SearchInputScreen} />
 						<Route path="/search/:input" exact component={SearchInputScreen} />
+						<Route path="/add" exact component={AddExerciseScreen} />
 
 						<Route path={process.env.REACT_APP_ADMIN_ADDRESS} component={AdminScreen} />
 						<Route path={process.env.REACT_APP_TEST_ADDRESS} component={TestScreen} />

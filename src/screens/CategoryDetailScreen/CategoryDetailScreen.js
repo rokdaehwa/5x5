@@ -7,11 +7,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
-import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined';
+import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 
@@ -33,10 +34,47 @@ function CategoryDetailScreen(props) {
 	const { to } = useParams();
 	const history = useHistory();
 	const [navOpen, setNavOpen] = useState(false);
+	const [snackbar, setSnackbar] = useState({
+		exercise: '',
+		open: false,
+	});
 	const { addExercise, numExercises } = props;
 
 	const name = toExerciseName(to);
 	const exercises = getExercisesByName(name);
+	
+	const handleAddExercise = (key, exerciseName) => (e) => {
+		addExercise(key);
+		setSnackbar({
+			exercise: exerciseName,
+			open: true,
+		});
+	};
+	
+	const handleNavOpen = () => {
+		setNavOpen(true);
+	}
+	
+	const handleNavClose = () => {
+		setNavOpen(false);
+	}
+	
+		const handleSnackOpen = () => {
+		setSnackbar({
+			...snackbar,
+			open: true,
+		});
+	};
+
+	const handleSnackClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSnackbar({
+			exercise: '',
+			open: false,
+		});
+	};
 
 	return (
 		<div>
@@ -60,8 +98,8 @@ function CategoryDetailScreen(props) {
 					<Typography variant="h5" className={classes.typography}>
 						<b>{name}</b>
 					</Typography>
-					<IconButton onClick={() => setNavOpen(true)}>
-						<CategoryOutlinedIcon />
+					<IconButton onClick={handleNavOpen}>
+						<CategoryRoundedIcon />
 					</IconButton>
 				</Toolbar>
 			</AppBar>
@@ -78,7 +116,7 @@ function CategoryDetailScreen(props) {
 								action={
 									<IconButton
 										color="primary"
-										onClick={() => addExercise(exercise.key)}
+										onClick={handleAddExercise(exercise.key, exercise.exerciseName)}
 									>
 										<AddCircleIcon />
 									</IconButton>
@@ -94,7 +132,18 @@ function CategoryDetailScreen(props) {
 					);
 				})}
 			</Container>
-			<CategoryDrawer open={navOpen} setOpen={setNavOpen} />
+			<CategoryDrawer open={navOpen} handleClose={handleNavClose} />
+			<Snackbar
+				open={snackbar.open}
+				onClose={handleSnackClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				autoHideDuration={2000}
+			>
+				<div className={classes.snackbar}>{`${snackbar.exercise} 추가되었습니다.`}</div>
+			</Snackbar>
 		</div>
 	);
 }

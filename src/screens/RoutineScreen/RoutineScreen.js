@@ -1,12 +1,20 @@
+/*
+	Todo: 
+		1. Nested Dnd - https://codesandbox.io/s/jp4ow4r45v?file=/index.js
+		2. Chip for myExercises
+		3. Double check before delete. 
+
+*/
+
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-// for Nested DnD - https://codesandbox.io/s/jp4ow4r45v?file=/index.js
 
 import { AppBar, Toolbar } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Card from '@material-ui/core/Card';
+import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
@@ -88,7 +96,7 @@ function RoutineScreen(props) {
 						color={toggleEdit ? 'primary' : 'default'}
 						disableElevation
 					>
-						{toggleEdit ? '완료' : '편집'}
+						{toggleEdit ? '완료' : '순서 편집 및 삭제'}
 					</Button>
 				</Toolbar>
 			</AppBar>
@@ -128,7 +136,11 @@ function RoutineScreen(props) {
 												>
 													<ListItem>
 														<ListItemText
-															primary={exercise.exerciseName}
+															primary={
+																<div>
+																	{exercise.exerciseName + ' '}
+																</div>
+															}
 															primaryTypographyProps={{
 																variant: 'h6',
 															}}
@@ -291,7 +303,6 @@ function RoutineScreen(props) {
 								{provided.placeholder}
 							</List>
 						)}
-						
 					</Droppable>
 				</DragDropContext>
 			</div>

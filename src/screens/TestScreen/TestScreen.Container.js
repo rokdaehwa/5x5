@@ -10,7 +10,7 @@ function TestScreenContainer(props) {
 }
 
 const mapStateToProps = (state) => ({
-	numExercises: state.routine.length,
+	exercises: state.routine,
 });
 
 const mapDispatchToProps = {  };

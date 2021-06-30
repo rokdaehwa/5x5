@@ -14,19 +14,19 @@ import { useStyles } from './styles';
 
 function CategoryDrawer(props) {
 	const classes = useStyles();
-	const { open, setOpen } = props;
+	const { open, handleClose } = props;
 
 	return (
 		<Drawer
 			open={open}
 			anchor="right"
 			classes={{ root: classes.drawerRoot, paper: classes.drawerPaper }}
-			onClose={() => setOpen(false)}
+			onClose={handleClose}
 		>
 			<Toolbar />
 			<Toolbar className={classes.toolbar}>
 				<Typography>카테고리</Typography>
-				<IconButton onClick={() => setOpen(false)}>
+				<IconButton onClick={handleClose}>
 					<CloseOutlinedIcon className={classes.drawerItem} />
 				</IconButton>
 			</Toolbar>

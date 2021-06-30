@@ -26,14 +26,4 @@ export const useStyles = makeStyles((theme) => ({
 		width: '100%',
 		paddingTop: '50%',
 	},
-	snackbar: {
-		backgroundColor: theme.palette.primary.main,
-		color: theme.palette.common.white,
-		fontSize: 16,
-		fontWeight: 700,
-		width: `calc(100% - ${theme.spacing(2)}px)`,
-		textAlign: 'center',
-		padding: theme.spacing(1),
-		borderRadius: theme.spacing(1)
-	}
 }));
