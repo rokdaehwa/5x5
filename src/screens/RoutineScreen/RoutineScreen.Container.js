@@ -6,6 +6,7 @@ import {
 	reorderExercise,
 	deleteExerciseSet,
 	updateExerciseSet,
+	reorderExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
 } from 'store/modules/routine';
@@ -26,6 +27,7 @@ const mapDispatchToProps = {
 	reorderExercise,
 	deleteExerciseSet,
 	updateExerciseSet,
+	reorderExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
 };

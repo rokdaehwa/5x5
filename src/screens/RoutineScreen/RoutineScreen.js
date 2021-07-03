@@ -16,6 +16,10 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import Card from '@material-ui/core/Card';
 import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -30,6 +34,8 @@ import Typography from '@material-ui/core/Typography';
 
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
+import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
 import { useStyles } from './styles';
@@ -38,11 +44,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const seperator = 'seperator';
+
 function RoutineScreen(props) {
 	const classes = useStyles();
 	const history = useHistory();
 	const [toggleEdit, setToggleEdit] = useState(false);
-	const [toggleSet, setToggleSet] = useState(false);
+	const [setOpen, setSetOpen] = useState(false);
+	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [isDragging, setIsDragging] = useState(false);
 	const [selected, setSelected] = useState({
 		exerciseKey: null,
@@ -59,9 +68,14 @@ function RoutineScreen(props) {
 		reorderExercise,
 		deleteExerciseSet,
 		updateExerciseSet,
+		reorderExerciseSet,
 		incrementSetReps,
 		decrementSetReps,
 	} = props;
+
+	const goBack = () => {
+		return history.goBack();
+	};
 
 	const onDragEnd = (result) => {
 		setIsDragging(false);
@@ -70,12 +84,141 @@ function RoutineScreen(props) {
 		if (!result.destination) {
 			return;
 		}
-
-		reorderExercise(result.source.index, result.destination.index);
+		if (result.type === 'droppableItem') {
+			reorderExercise(result.source.index, result.destination.index);
+		} else if (result.type.includes('droppableSubItem')) {
+			const parentKey = result.type.split(seperator)[1];
+			reorderExerciseSet(parentKey, result.source.index, result.destination.index);
+		}
 	};
 
 	const onDragStart = () => {
 		setIsDragging(true);
+	};
+
+	const handleToggleEdit = () => {
+		return setToggleEdit(!toggleEdit);
+	};
+
+	const handleDeleteOpen = (exerciseKey, setKey) => () => {
+		setSelected({
+			exerciseKey,
+			setKey,
+		});
+		setDeleteOpen(true);
+	};
+
+	const handleDelete = () => {
+		const exerciseKey = selected.exerciseKey;
+		const setKey = selected.setKey;
+		if (exerciseKey === null) return;
+		const isExerciseDelete = setKey === null || setKey === undefined;
+		if (isExerciseDelete) deleteExercise(exerciseKey);
+		else deleteExerciseSet(exerciseKey, setKey);
+		setDeleteOpen(false);
+	};
+
+	const getExerciseSets = (exercise) => {
+		return (
+			<Droppable
+				droppableId={exercise.key}
+				type={`droppableSubItem${seperator}${exercise.key}`}
+			>
+				{(provided, snapshot) => (
+					<div ref={provided.innerRef}>
+						{exercise.exerciseSets.map((set, index) => (
+							<Draggable
+								key={set.key}
+								draggableId={set.key}
+								index={index}
+								isDragDisabled={!toggleEdit}
+							>
+								{(provided, snapshot) => (
+									<ListItem
+										className={snapshot.isDragging ? classes.setDragging : ''}
+										key={set.key}
+										button={!toggleEdit}
+										onClick={() => {
+											if (!toggleEdit) {
+												setSelected({
+													exerciseKey: exercise.key,
+													setKey: set.key,
+												});
+												setInputWeight(set.weight);
+												setInputReps(set.reps);
+												setInputRepsUnit(set.repsUnit);
+												setSetOpen(true);
+											}
+										}}
+										ref={provided.innerRef}
+										{...provided.draggableProps}
+										{...provided.dragHandleProps}
+									>
+										{toggleEdit ? (
+											<ListItemIcon>
+												<ButtonBase
+													onClick={handleDeleteOpen(
+														exercise.key,
+														set.key
+													)}
+												>
+													<RemoveCircleIcon color="error" />
+												</ButtonBase>
+											</ListItemIcon>
+										) : null}
+
+										<ListItemText
+											secondary={`${
+												parseInt(set.weight) === 0
+													? '맨몸'
+													: `${set.weight}kg`
+											} ${set.reps}${set.repsUnit}`}
+											secondaryTypographyProps={{
+												color: `${
+													set.setReps <= 0
+														? 'textSecondary'
+														: 'textPrimary'
+												}`,
+											}}
+										/>
+
+										{toggleEdit ? (
+											<DragIndicatorIcon color="disabled" />
+										) : (
+											<ListItemSecondaryAction
+												className={classes.repsContainer}
+											>
+												<ButtonBase
+													className={classes.btnSetReps}
+													onClick={() =>
+														decrementSetReps(exercise.key, set.key)
+													}
+													disabled={set.setReps <= 0}
+												>
+													-
+												</ButtonBase>
+												<span>{set.setReps}</span>
+												<ButtonBase
+													className={classes.btnSetReps}
+													onClick={() =>
+														incrementSetReps(exercise.key, set.key)
+													}
+												>
+													+
+												</ButtonBase>
+											</ListItemSecondaryAction>
+										)}
+
+										{provided.placeholder}
+									</ListItem>
+								)}
+							</Draggable>
+						))}
+						{provided.placeholder}
+					</div>
+				)}
+			</Droppable>
+		);
 	};
 
 	return (
@@ -83,7 +226,7 @@ function RoutineScreen(props) {
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 				<Toolbar>
 					{toggleEdit ? null : (
-						<IconButton onClick={() => history.goBack()}>
+						<IconButton onClick={goBack}>
 							<CloseIcon />
 						</IconButton>
 					)}
@@ -91,7 +234,7 @@ function RoutineScreen(props) {
 					<Button
 						disabled={!toggleEdit && (toggleEdit || exercises.length === 0)}
 						className={classes.trailing}
-						onClick={() => setToggleEdit(!toggleEdit)}
+						onClick={handleToggleEdit}
 						variant={toggleEdit ? 'outlined' : 'text'}
 						color={toggleEdit ? 'primary' : 'default'}
 						disableElevation
@@ -114,7 +257,7 @@ function RoutineScreen(props) {
 					<Typography>{`${exercises.length}가지의 운동`}</Typography>
 				</div>
 				<DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-					<Droppable droppableId="droppable">
+					<Droppable droppableId="droppable" type="droppableItem">
 						{(provided, snapshot) => (
 							<List {...provided.droppableProps} ref={provided.innerRef}>
 								{exercises.map((exercise, index) => {
@@ -129,7 +272,7 @@ function RoutineScreen(props) {
 												<Card
 													key={exercise.key}
 													className={classes.exercise}
-													elevation={snapshot.isDragging ? 4 : 0}
+													elevation={snapshot.isDragging ? 6 : 0}
 													ref={provided.innerRef}
 													{...provided.draggableProps}
 													{...provided.dragHandleProps}
@@ -152,9 +295,9 @@ function RoutineScreen(props) {
 																	color="secondary"
 																	disableElevation
 																	variant="contained"
-																	onClick={() =>
-																		deleteExercise(exercise.key)
-																	}
+																	onClick={handleDeleteOpen(
+																		exercise.key
+																	)}
 																>
 																	운동 삭제
 																</Button>
@@ -171,100 +314,7 @@ function RoutineScreen(props) {
 														</ListItemSecondaryAction>
 													</ListItem>
 
-													{exercise.exerciseSets.map((set) => {
-														return (
-															<ListItem
-																key={set.key}
-																button={!toggleEdit}
-																onClick={() => {
-																	if (!toggleEdit) {
-																		setSelected(() => {
-																			return {
-																				exerciseKey:
-																					exercise.key,
-																				setKey: set.key,
-																			};
-																		});
-																		setInputWeight(set.weight);
-																		setInputReps(set.reps);
-																		setInputRepsUnit(
-																			set.repsUnit
-																		);
-																		setToggleSet(true);
-																	}
-																}}
-															>
-																{toggleEdit ? (
-																	<ListItemIcon>
-																		<ButtonBase
-																			onClick={() =>
-																				deleteExerciseSet(
-																					exercise.key,
-																					set.key
-																				)
-																			}
-																		>
-																			<RemoveCircleIcon color="error" />
-																		</ButtonBase>
-																	</ListItemIcon>
-																) : null}
-
-																<ListItemText
-																	secondary={`${
-																		parseInt(set.weight) === 0
-																			? '맨몸'
-																			: `${set.weight}kg`
-																	} ${set.reps}${set.repsUnit}`}
-																	secondaryTypographyProps={{
-																		color: `${
-																			set.setReps <= 0
-																				? 'textSecondary'
-																				: 'textPrimary'
-																		}`,
-																	}}
-																/>
-
-																{toggleEdit ? null : (
-																	<ListItemSecondaryAction
-																		className={
-																			classes.repsContainer
-																		}
-																	>
-																		<ButtonBase
-																			className={
-																				classes.btnSetReps
-																			}
-																			onClick={() =>
-																				decrementSetReps(
-																					exercise.key,
-																					set.key
-																				)
-																			}
-																			disabled={
-																				set.setReps <= 0
-																			}
-																		>
-																			-
-																		</ButtonBase>
-																		<span>{set.setReps}</span>
-																		<ButtonBase
-																			className={
-																				classes.btnSetReps
-																			}
-																			onClick={() =>
-																				incrementSetReps(
-																					exercise.key,
-																					set.key
-																				)
-																			}
-																		>
-																			+
-																		</ButtonBase>
-																	</ListItemSecondaryAction>
-																)}
-															</ListItem>
-														);
-													})}
+													{getExerciseSets(exercise)}
 
 													{toggleEdit ? (
 														<div className={classes.fakeListItem} />
@@ -272,16 +322,14 @@ function RoutineScreen(props) {
 														<ListItem
 															button
 															onClick={() => {
-																setSelected(() => {
-																	return {
-																		exerciseKey: exercise.key,
-																		setKey: null,
-																	};
+																setSelected({
+																	exerciseKey: exercise.key,
+																	setKey: null,
 																});
 																setInputWeight('');
 																setInputReps('');
 																setInputRepsUnit('회');
-																setToggleSet(true);
+																setSetOpen(true);
 															}}
 														>
 															<ListItemIcon>
@@ -330,13 +378,13 @@ function RoutineScreen(props) {
 
 			<Dialog
 				fullScreen
-				open={toggleSet}
-				onClose={() => setToggleSet(false)}
+				open={setOpen}
+				onClose={() => setSetOpen(false)}
 				TransitionComponent={Transition}
 			>
 				<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 					<Toolbar>
-						<IconButton onClick={() => setToggleSet(false)}>
+						<IconButton onClick={() => setSetOpen(false)}>
 							<CloseIcon />
 						</IconButton>
 
@@ -359,7 +407,7 @@ function RoutineScreen(props) {
 									});
 								}
 
-								setToggleSet(false);
+								setSetOpen(false);
 							}}
 						>
 							완료
@@ -406,6 +454,22 @@ function RoutineScreen(props) {
 						onChange={(e) => setInputReps(e.target.value)}
 					/>
 				</div>
+			</Dialog>
+
+			<Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+				<DialogTitle>삭제하시겠습니까?</DialogTitle>
+				<DialogActions>
+					<Button onClick={() => setDeleteOpen(false)}>취소</Button>
+					<Button
+						color="secondary"
+						variant="contained"
+						disableElevation
+						fullWidth
+						onClick={handleDelete}
+					>
+						삭제하기
+					</Button>
+				</DialogActions>
 			</Dialog>
 		</div>
 	);

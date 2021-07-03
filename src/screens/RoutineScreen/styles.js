@@ -29,14 +29,23 @@ export const useStyles = makeStyles((theme) => ({
 		textAlign: 'center',
 	},
 	exercise: {
+		outline: 'none',
 		backgroundColor: theme.palette.common.white,
 		margin: `${theme.spacing(2)}px 0px`,
+	},
+	setDragging: {
+		// border: 'solid 1px #222222',
+		// backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.common.white + 70,
+		borderRadius: theme.spacing(1),
+		boxShadow: `0px 0px ${theme.spacing(4)}px ${theme.palette.common.black + 30}`,
 	},
 	repsContainer: {
 		display: 'flex',
 		alignItems: 'center',
 		height: '100%',
 	},
+	
 	btnSetReps: {
 		background: theme.palette.common.black + '2a',
 		width: theme.spacing(3),

@@ -1,13 +1,13 @@
 export const MOCK_EXERCISES = [
 	{
 		created: Date(),
-		key: '0',
+		key: '1',
 		exerciseName: '벤치프레스',
 		exerciseParts: ['가슴, 삼두'],
 		exerciseSets: [
 			{
 				created: Date(),
-				key: '0',
+				key: '11',
 				weight: 100,
 				reps: 100,
 				repsUnit: '회',
@@ -17,7 +17,7 @@ export const MOCK_EXERCISES = [
 			},
 			{
 				created: Date(),
-				key: '1',
+				key: '12',
 				weight: 200,
 				reps: 100,
 				repsUnit: '회',
@@ -29,13 +29,13 @@ export const MOCK_EXERCISES = [
 	},
 	{
 		created: Date(),
-		key: '1',
+		key: '2',
 		exerciseName: '풀업',
 		exerciseParts: ['전신, 등'],
 		exerciseSets: [
 			{
 				created: Date(),
-				key: '0',
+				key: '21',
 				weight: 10,
 				reps: 11,
 				repsUnit: '회',
@@ -45,7 +45,7 @@ export const MOCK_EXERCISES = [
 			},
 			{
 				created: Date(),
-				key: '1',
+				key: '22',
 				weight: 12,
 				reps: 13,
 				repsUnit: '회',
@@ -57,13 +57,13 @@ export const MOCK_EXERCISES = [
 	},
 	{
 		created: Date(),
-		key: '2',
+		key: '3',
 		exerciseName: '신박한운동',
 		exerciseParts: ['전신, 등'],
 		exerciseSets: [
 			{
 				created: Date(),
-				key: '0',
+				key: '30',
 				weight: 10,
 				reps: 11,
 				repsUnit: '회',
@@ -73,7 +73,7 @@ export const MOCK_EXERCISES = [
 			},
 			{
 				created: Date(),
-				key: '1',
+				key: '31',
 				weight: 12,
 				reps: 13,
 				repsUnit: '회',
@@ -83,7 +83,7 @@ export const MOCK_EXERCISES = [
 			},
 			{
 				created: Date(),
-				key: '2',
+				key: '32',
 				weight: 0,
 				reps: 20,
 				repsUnit: '회',

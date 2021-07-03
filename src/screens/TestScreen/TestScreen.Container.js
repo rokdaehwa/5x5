@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { updateUserEmail } from 'store/modules/profile';
-import { setDoneOrNot, flush } from 'store/modules/routine';
+import { reorderExercise, reorderExerciseSet } from 'store/modules/routine';
 import TestScreen from './TestScreen';
 
 function TestScreenContainer(props) {
@@ -13,6 +11,6 @@ const mapStateToProps = (state) => ({
 	exercises: state.routine,
 });
 
-const mapDispatchToProps = {  };
+const mapDispatchToProps = { reorderExercise, reorderExerciseSet };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TestScreenContainer);

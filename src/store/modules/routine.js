@@ -73,7 +73,7 @@ export default handleActions(
 			console.log(newExercise);
 			const newExerciseItem = {
 				created: Date(),
-				key: Date.now(),
+				key: Date.now().toString(),
 				exerciseName: newExercise.exerciseName,
 				exerciseParts: newExercise.exerciseParts,
 				exerciseSets: [],
@@ -88,11 +88,8 @@ export default handleActions(
 		},
 		[REORDER_EXERCISE]: (state, action) => {
 			let result = [...state];
-			console.log('action', state);
 			const [removed] = result.splice(action.payload.startIndex, 1);
-			console.log('action - removed', removed);
 			result.splice(action.payload.endIndex, 0, removed);
-			console.log('action - reorder', result);
 			return result;
 		},
 		[ADD_EXERCISE_SET]: (state, action) => {
@@ -101,9 +98,9 @@ export default handleActions(
 			if (key === null || info === null) return state;
 			const setInfo = {
 				...info,
-				created: Date.now(),
-				updated: Date.now(),
-				key: Date.now(),
+				created: Date(),
+				updated: Date(),
+				key: Date.now().toString(),
 				setReps: 1,
 				done: [],
 				finished: [],
@@ -146,6 +143,27 @@ export default handleActions(
 									  }
 									: set
 							),
+					  }
+					: item
+			);
+		},
+		[REORDER_EXERCISE_SET]: (state, action) => {
+			const exerciseKey = action.payload.exerciseKey;
+			const startIndex = action.payload.startIndex;
+			const endIndex = action.payload.endIndex;
+
+			const newItems = [...state];
+			const exercise = state.find((item) => item.key === exerciseKey);
+			let exerciseSets = [...exercise.exerciseSets];
+
+			const [removed] = exerciseSets.splice(startIndex, 1);
+			exerciseSets.splice(endIndex, 0, removed);
+
+			return newItems.map((item) =>
+				item.key === exerciseKey
+					? {
+							...item,
+							exerciseSets,
 					  }
 					: item
 			);
