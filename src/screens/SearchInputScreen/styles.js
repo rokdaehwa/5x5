@@ -18,5 +18,5 @@ export const useStyles = makeStyles((theme) => ({
 	},
 	btnAdd: {
 		margin: theme.spacing(2),
-	}
+	},
 }));

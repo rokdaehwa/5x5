@@ -186,10 +186,10 @@ export function toExerciseName(param) {
 	return null;
 }
 
-export function getExercisesByName(name) {
+export function getExercisesByName(exerciseData, name) {
 	let result = [];
-	for (let i = 0; i < EXERCISE_DATA.length; i++) {
-		const exercise = EXERCISE_DATA[i];
+	for (let i = 0; i < exerciseData.length; i++) {
+		const exercise = exerciseData[i];
 		if (exercise.exerciseParts.includes(name)) {
 			result.push(exercise);
 		}

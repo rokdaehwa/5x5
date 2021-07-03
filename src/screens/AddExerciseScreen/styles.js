@@ -23,7 +23,18 @@ export const useStyles = makeStyles((theme) => ({
 		backgroundColor: theme.palette.common.black + '0a',
 	},
 	space: {
+		width:  theme.spacing(4),
+		height: theme.spacing(4),
+	},
+	body: {
 		width: '100%',
-		paddingTop: '50%',
+		padding: theme.spacing(2),
+	},
+	textField: {
+		width: `calc(100vw - ${2 * theme.spacing(2)}px)`,
+		border: `0.5px solid ${theme.palette.common.grey}`,
+		padding: theme.spacing(1.5),
+		boxSizing: 'border-box',
+		borderRadius: theme.spacing(0.5),
 	},
 }));

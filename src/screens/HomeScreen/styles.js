@@ -39,7 +39,7 @@ export const useStyles = makeStyles((theme) => ({
 		// flex: 1,
 		display: 'flex',
 		flexWrap: 'nowrap',
-		overflow: 'scroll',
+		overflowX: 'scroll',
 		width: '100vw',
 		marginTop: theme.spacing(4),
 		paddingBottom: theme.spacing(4),

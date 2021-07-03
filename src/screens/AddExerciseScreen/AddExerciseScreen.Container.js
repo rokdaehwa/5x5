@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-// import { updateUserEmail } from 'store/modules/profile';
-// import { setDoneOrNot, flush } from 'store/modules/routine';
+import { addExercise } from 'store/modules/routine';
+import { addNewExercise } from 'store/modules/exercises';
 import AddExerciseScreen from './AddExerciseScreen';
 
 function AddExerciseScreenContainer(props) {
@@ -10,9 +10,8 @@ function AddExerciseScreenContainer(props) {
 }
 
 const mapStateToProps = (state) => ({
-	exercises: state.routine,
 });
 
-const mapDispatchToProps = {  };
+const mapDispatchToProps = { addExercise, addNewExercise };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddExerciseScreenContainer);

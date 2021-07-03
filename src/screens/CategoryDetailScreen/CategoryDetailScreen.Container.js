@@ -9,6 +9,7 @@ function CategoryDetailScreenContainer(props) {
 
 const mapStateToProps = (state) => ({
 	numExercises: state.routine.length,
+	exerciseData: state.exercises,
 });
 
 const mapDispatchToProps = { addExercise };

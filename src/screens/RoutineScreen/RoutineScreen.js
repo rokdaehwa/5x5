@@ -1,9 +1,6 @@
 /*
 	Todo: 
-		1. Nested Dnd - https://codesandbox.io/s/jp4ow4r45v?file=/index.js
-		2. Chip for myExercises
-		3. Double check before delete. 
-
+		1. Chip for myExercises
 */
 
 import React, { useState } from 'react';
@@ -17,8 +14,6 @@ import Card from '@material-ui/core/Card';
 import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
@@ -34,7 +29,6 @@ import Typography from '@material-ui/core/Typography';
 
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
@@ -261,6 +255,7 @@ function RoutineScreen(props) {
 						{(provided, snapshot) => (
 							<List {...provided.droppableProps} ref={provided.innerRef}>
 								{exercises.map((exercise, index) => {
+									console.log('exercise', exercise);
 									return (
 										<Draggable
 											key={exercise.key}
@@ -277,11 +272,12 @@ function RoutineScreen(props) {
 													{...provided.draggableProps}
 													{...provided.dragHandleProps}
 												>
-													<ListItem>
+													<ListItem button={exercise.my}>
 														<ListItemText
 															primary={
 																<div>
 																	{exercise.exerciseName + ' '}
+																	{exercise.my ? <Chip label='my' size="small"/> :null}
 																</div>
 															}
 															primaryTypographyProps={{

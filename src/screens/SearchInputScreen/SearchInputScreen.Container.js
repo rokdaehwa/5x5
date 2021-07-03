@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
+import { addExercise } from 'store/modules/routine';
 import SearchInputScreen from './SearchInputScreen';
 
 function SearchInputScreenContainer(props) {
@@ -8,8 +10,9 @@ function SearchInputScreenContainer(props) {
 
 const mapStateToProps = (state) => ({
 	numExercises: state.routine.length,
+	exerciseData: state.exercises,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { addExercise };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchInputScreenContainer);

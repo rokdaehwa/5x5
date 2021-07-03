@@ -1,5 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
-import { MOCK_EXERCISES, EXERCISE_DATA } from 'utils/data.js';
+// eslint-disable-next-line
+import { MOCK_EXERCISES } from 'utils/data.js';
 
 const ADD_EXERCISE = 'exrecises/ADD_EXERCISE';
 const DELETE_EXERCISE = 'exercises/DELETE_EXERCISE';
@@ -15,7 +16,7 @@ const DECREMENT_SET_REPS = 'exercise/DECREMENT_SET_REPS';
 const SET_DONE_OR_NOT = 'exercise/SET_DONE_OR_NOT';
 const FLUSH = 'exercise/FLUSH';
 
-export const addExercise = createAction(ADD_EXERCISE, (key) => key);
+export const addExercise = createAction(ADD_EXERCISE, (data, key) => ({ data, key }));
 export const deleteExercise = createAction(DELETE_EXERCISE, (key) => key);
 export const reorderExercise = createAction(REORDER_EXERCISE, (startIndex, endIndex) => ({
 	startIndex,
@@ -68,9 +69,8 @@ export default handleActions(
 	{
 		[ADD_EXERCISE]: (state, action) => {
 			if (action.payload === null) return state;
-			const newExercise = EXERCISE_DATA.find((item) => item.key === action.payload);
-			if (newExercise === null) return state; // no such item
-			console.log(newExercise);
+			const newExercise = action.payload.data.find((item) => item.key === action.payload.key);
+			if (newExercise === undefined) return state; // no such item
 			const newExerciseItem = {
 				created: Date(),
 				key: Date.now().toString(),
@@ -79,6 +79,7 @@ export default handleActions(
 				exerciseSets: [],
 				done: null,
 				finished: null,
+				my: newExercise.my
 			};
 			return state.concat(newExerciseItem);
 		},

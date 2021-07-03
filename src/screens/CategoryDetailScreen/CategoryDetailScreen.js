@@ -1,6 +1,14 @@
+/*
+	Todo:
+		1. add Link to SearchInputScreen
+			<IconButton component={Link} to="/search">
+				<SearchOutlinedIcon />
+			</IconButton>
+		2. 
+*/
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Card from '@material-ui/core/Card';
@@ -17,7 +25,7 @@ import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 
 import CategoryDrawer from 'components/CategoryDrawer';
-import { toExerciseName, getExercisesByName } from 'utils/data.js';
+import { toExerciseName, getExercisesByName } from 'utils/data';
 
 import { useStyles } from './styles';
 
@@ -32,38 +40,30 @@ const Container = styled.div`
 function CategoryDetailScreen(props) {
 	const classes = useStyles();
 	const { to } = useParams();
-	const history = useHistory();
 	const [navOpen, setNavOpen] = useState(false);
 	const [snackbar, setSnackbar] = useState({
 		exercise: '',
 		open: false,
 	});
-	const { addExercise, numExercises } = props;
+	const { exerciseData, addExercise, numExercises } = props;
 
 	const name = toExerciseName(to);
-	const exercises = getExercisesByName(name);
-	
+	const exercises = getExercisesByName(exerciseData, name);
+
 	const handleAddExercise = (key, exerciseName) => (e) => {
-		addExercise(key);
+		addExercise(exerciseData, key);
 		setSnackbar({
 			exercise: exerciseName,
 			open: true,
 		});
 	};
-	
+
 	const handleNavOpen = () => {
 		setNavOpen(true);
-	}
-	
+	};
+
 	const handleNavClose = () => {
 		setNavOpen(false);
-	}
-	
-		const handleSnackOpen = () => {
-		setSnackbar({
-			...snackbar,
-			open: true,
-		});
 	};
 
 	const handleSnackClose = (event, reason) => {
@@ -71,7 +71,7 @@ function CategoryDetailScreen(props) {
 			return;
 		}
 		setSnackbar({
-			exercise: '',
+			...snackbar,
 			open: false,
 		});
 	};
@@ -116,7 +116,10 @@ function CategoryDetailScreen(props) {
 								action={
 									<IconButton
 										color="primary"
-										onClick={handleAddExercise(exercise.key, exercise.exerciseName)}
+										onClick={handleAddExercise(
+											exercise.key,
+											exercise.exerciseName
+										)}
 									>
 										<AddCircleIcon />
 									</IconButton>

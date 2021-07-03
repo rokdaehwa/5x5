@@ -3,15 +3,13 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
+import Chip from '@material-ui/core/Chip';
+import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import InputBase from '@material-ui/core/InputBase';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
@@ -19,17 +17,17 @@ import Typography from '@material-ui/core/Typography';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import CancelIcon from '@material-ui/icons/Cancel';
-import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 
+import AddExerciseScreen from 'screens/AddExerciseScreen';
 import * as hangul from 'hangul-js';
-import { EXERCISE_DATA } from 'utils/data';
 import { useStyles } from './styles';
 
 function SearchInputScreen(props) {
-	const { numExercises } = props;
+	const { addExercise, exerciseData, numExercises } = props;
 	const [searchInput, setSearchInput] = useState('');
 	const [focused, setFocused] = useState(false);
+	const [addOpen, setAddOpen] = useState(false);
 	const classes = useStyles();
 	const history = useHistory();
 	const { input } = useParams();
@@ -52,12 +50,10 @@ function SearchInputScreen(props) {
 	};
 
 	const handleFocus = (e) => {
-		console.log('focus');
 		setFocused(true);
 	};
 
 	const handleBlur = (e) => {
-		console.log('blur');
 		setFocused(false);
 	};
 
@@ -65,6 +61,15 @@ function SearchInputScreen(props) {
 		inputRef.current.focus();
 		setSearchInput('');
 	};
+	
+	const handleAddOpen = () => {
+		setAddOpen(true);
+		// setSearchInput('');
+	}
+	
+	const handleAddClose = () => {
+		setAddOpen(false);
+	}
 
 	const exerciseFilter = (item) => {
 		// https://taegon.kim/archives/9919
@@ -75,6 +80,10 @@ function SearchInputScreen(props) {
 		if (hangul.search(item.exerciseName.replace(/\s/g, ''), _input) === 0) return item;
 		if (hangul.search(item.exerciseParts.join(''), _input) === 0) return item;
 	};
+	
+	const handleAdd = (key) => () => {
+		addExercise(exerciseData, key);
+	}
 
 	return (
 		<div className={classes.root}>
@@ -117,17 +126,22 @@ function SearchInputScreen(props) {
 			<Toolbar />
 
 			<List>
-				{EXERCISE_DATA.filter(exerciseFilter).length === 0 ? (
-					<h1> </h1>
+				{exerciseData.filter(exerciseFilter).length === 0 ? (
+					<Typography align='center' color='textSecondary'>검색 결과가 없습니다. </Typography>
 				) : (
-					EXERCISE_DATA.filter(exerciseFilter).map((item) => {
+					exerciseData.filter(exerciseFilter).map((item) => {
 						return (
-							<ListItem key={item.key} button component={Link} to={`/detail/${item.key}`}>
-								<ListItemText primary={item.exerciseName} />
+							<ListItem key={item.key}>
+								<ListItemText primary={
+										<div>
+											{item.exerciseName + ' '}
+											{item.my ? <Chip label='my' size="small"/> :null}
+										</div>								
+									} />
 								<ListItemSecondaryAction>
-									<Typography variant="body2" color="textSecondary">
-										{item.exerciseParts.join(', ')}
-									</Typography>
+									<IconButton color='primary' onClick={handleAdd(item.key)}>
+										<AddCircleIcon />
+									</IconButton>
 								</ListItemSecondaryAction>
 							</ListItem>
 						);
@@ -140,11 +154,14 @@ function SearchInputScreen(props) {
 					variant="contained"
 					color="primary"
 					disableElevation
-					onClick={() => alert('곧 업데이트됩니다!')}
+					onClick={handleAddOpen}
 				>
 					{`직접 '${searchInput}' 추가하기`}
 				</Button>
 			)}
+			<Dialog open={addOpen} onClose={handleAddClose} fullScreen>
+				<AddExerciseScreen input={searchInput} handleAddClose={handleAddClose} resetInput={resetInput}/>
+			</Dialog>
 		</div>
 	);
 }

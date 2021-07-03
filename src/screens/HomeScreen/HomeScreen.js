@@ -1,5 +1,13 @@
+/*
+	Todo:
+		1. add Link to SearchInputScreen
+			<Link to='/search' className={classes.link}>
+				<div className={classes.textField} onClick={handleNavOpen}>{hint}</div>
+			</Link>
+		2. 
+*/
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Card from '@material-ui/core/Card';
@@ -10,7 +18,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined';
 import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 
@@ -21,8 +28,7 @@ import { useStyles } from './styles';
 
 function HomeScreen(props) {
 	const classes = useStyles();
-	const history = useHistory();
-	const { numExercises, addExercise, userName } = props;
+	const { numExercises, exerciseData, addExercise, userName } = props;
 	const [navOpen, setNavOpen] = useState(false);
 	const [snackbar, setSnackbar] = useState({
 		exercise: '',
@@ -33,7 +39,7 @@ function HomeScreen(props) {
 	const hint = '어떤 운동으로 시작해볼까요?';
 
 	const handleAddExercise = (key, exerciseName) => (e) => {
-		addExercise(key);
+		addExercise(exerciseData, key);
 		setSnackbar({
 			exercise: exerciseName,
 			open: true,
@@ -47,13 +53,6 @@ function HomeScreen(props) {
 	const handleNavClose = () => {
 		setNavOpen(false);
 	}
-
-	const handleSnackOpen = () => {
-		setSnackbar({
-			...snackbar,
-			open: true,
-		});
-	};
 
 	const handleSnackClose = (event, reason) => {
 		if (reason === 'clickaway') {
@@ -90,8 +89,11 @@ function HomeScreen(props) {
 
 			<Toolbar />
 			<Toolbar />
-
-				<div className={classes.textField} onClick={handleNavOpen}>{hint}</div>
+			
+			<Link to='/search' className={classes.link}>
+				<div className={classes.textField}>{hint}</div>
+			</Link>
+			
 
 			<Toolbar />
 

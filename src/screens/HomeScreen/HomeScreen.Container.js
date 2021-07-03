@@ -10,6 +10,7 @@ function HomeScreenContainer(props) {
 const mapStateToProps = (state) => ({
 	userName: state.profile.userName,
 	numExercises: state.routine.length,
+	exerciseData: state.exercises,
 });
 
 const mapDispatchToProps = { addExercise };
