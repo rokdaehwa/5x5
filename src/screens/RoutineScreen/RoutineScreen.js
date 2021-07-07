@@ -2,7 +2,6 @@
 	Todo: 
 		1. Chip for myExercises
 */
-
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -11,7 +10,6 @@ import { AppBar, Toolbar } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Card from '@material-ui/core/Card';
-import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -32,6 +30,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
+import Chip from 'components/Chip';
 import { useStyles } from './styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -65,6 +64,7 @@ function RoutineScreen(props) {
 		reorderExerciseSet,
 		incrementSetReps,
 		decrementSetReps,
+		flush,
 	} = props;
 
 	const goBack = () => {
@@ -255,7 +255,6 @@ function RoutineScreen(props) {
 						{(provided, snapshot) => (
 							<List {...provided.droppableProps} ref={provided.innerRef}>
 								{exercises.map((exercise, index) => {
-									console.log('exercise', exercise);
 									return (
 										<Draggable
 											key={exercise.key}
@@ -277,7 +276,13 @@ function RoutineScreen(props) {
 															primary={
 																<div>
 																	{exercise.exerciseName + ' '}
-																	{exercise.my ? <Chip label='my' size="small"/> :null}
+																	{exercise.my ? (
+																		<Chip
+																			label="my"
+																			size="small"
+																			color="warning"
+																		/>
+																	) : null}
 																</div>
 															}
 															primaryTypographyProps={{
@@ -364,6 +369,7 @@ function RoutineScreen(props) {
 						disableElevation
 						component={Link}
 						to="/exercise"
+						onClick={flush}
 					>
 						<Typography variant="h6">
 							<b>시작하기</b>

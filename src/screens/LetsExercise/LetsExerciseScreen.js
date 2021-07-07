@@ -100,7 +100,7 @@ function LetsExerciseScreen(props) {
 	const [isTicking, setIsTicking] = useState(true);
 	const [isRest, setIsRest] = useState(false);
 
-	const { handleNext, getSetInfo, index, numList, flush, setIndex } = props;
+	const { handleNext, getSetInfo, index, numList, setIndex } = props;
 
 	useInterval(
 		() => {
@@ -138,7 +138,6 @@ function LetsExerciseScreen(props) {
 				<Toolbar>
 					<IconButton
 						onClick={() => {
-							flush();
 							history.goBack();
 						}}
 					>

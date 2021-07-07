@@ -9,6 +9,7 @@ import {
 	reorderExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
+	flush,
 } from 'store/modules/routine';
 import RoutineScreen from './RoutineScreen';
 
@@ -30,6 +31,7 @@ const mapDispatchToProps = {
 	reorderExerciseSet,
 	incrementSetReps,
 	decrementSetReps,
+	flush
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutineScreenContainer);

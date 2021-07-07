@@ -19,6 +19,7 @@ import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 
+import Chip from 'components/Chip';
 import firebase, { database } from 'utils/firebase';
 
 const useStyles = makeStyles((theme) => ({
@@ -108,20 +109,20 @@ const isValidEmail = (email) => {
 function LetsResultScreen(props) {
 	const classes = useStyles();
 	const componentRef = useRef();
-	const { list, exercises, flush, today, updateUserEmail, state } = props;
+	const { list, exercises, today, updateUserEmail, state } = props;
 	const [inputApply, setInputApply] = useState('');
 	const [inputComment, setInputComment] = useState('');
 	const [applied, setApplied] = useState(false);
 	const [exporting, setExporting] = useState(false);
-	
+
 	console.log('list', list);
-	
+
 	useEffect(() => {
 		if (exporting) {
 			exportComponentAsPNG(componentRef);
 		}
 		setExporting(false);
-	}, [exporting])
+	}, [exporting]);
 
 	const handleSubmit = () => {
 		console.log('Submit started...', state);
@@ -145,20 +146,17 @@ function LetsResultScreen(props) {
 	const handleExport = () => {
 		setExporting(true);
 	};
-	
+
 	const rate = list.length === 0 ? '-' : list.filter((item) => item.done).length / list.length;
 
 	return (
 		<div>
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 				<Toolbar>
-					<IconButton component={Link} to="/" onClick={flush}>
+					<IconButton component={Link} to="/">
 						<HomeRoundedIcon />
 					</IconButton>
-					<IconButton
-						className={classes.trailing}
-						onClick={handleExport}
-					>
+					<IconButton className={classes.trailing} onClick={handleExport}>
 						<GetAppRoundedIcon />
 					</IconButton>
 				</Toolbar>
@@ -175,7 +173,9 @@ function LetsResultScreen(props) {
 						<b>루틴 결과</b>
 					</Typography>
 					<Typography>{`${exercises.length}가지의 운동`}</Typography>
-					<Typography><b>{`${parseInt(rate * 100)}% 달성!`}</b></Typography>
+					<Typography>
+						<b>{`${parseInt(rate * 100)}% 달성!`}</b>
+					</Typography>
 				</div>
 
 				<List>
@@ -185,7 +185,14 @@ function LetsResultScreen(props) {
 								<ListItem key={exercise.exerciseKey}>
 									<ListItemText
 										primary={exercise.exerciseParts.join(', ')}
-										secondary={exercise.exerciseName}
+										secondary={
+											<div>
+												{exercise.exerciseName + ' '}
+												{exercise.my ? (
+													<Chip label="my" size="small" color="warning" />
+												) : null}
+											</div>
+										}
 										primaryTypographyProps={{
 											color: 'textSecondary',
 											variant: 'body2',

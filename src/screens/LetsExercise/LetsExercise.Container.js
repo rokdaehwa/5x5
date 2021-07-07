@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { updateUserEmail } from 'store/modules/profile';
-import { setDoneOrNot, flush } from 'store/modules/routine';
+import { setDoneOrNot } from 'store/modules/routine';
 import LetsExercise from './LetsExercise';
 
 function LetsExerciseContainer(props) {
@@ -16,6 +16,6 @@ const mapStateToProps = (state) => ({
 	state,
 });
 
-const mapDispatchToProps = { setDoneOrNot, flush, updateUserEmail };
+const mapDispatchToProps = { setDoneOrNot, updateUserEmail };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LetsExerciseContainer);

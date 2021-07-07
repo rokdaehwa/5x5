@@ -226,12 +226,21 @@ export default handleActions(
 				return tmpExercises;
 			}
 			const setIndex = tmpExercise.exerciseSets.findIndex((item) => item.key === setKey);
-			console.log(tmpExercise.exerciseSets[setIndex]);
 			tmpExercise.exerciseSets[setIndex].done.push(info.done);
 			tmpExercise.exerciseSets[setIndex].finished.push(info.finished);
 			return tmpExercises;
 		},
-		[FLUSH]: (state, action) => state,
+		[FLUSH]: (state, action) => state.map((item) => {
+			item.done = null;
+			item.finished = null;
+			item.exerciseSets = item.exerciseSets.map((set) => ({
+				...set,
+				done: [],
+				finished: [],
+			}))
+			console.log('flush!@', item);
+			return item;
+		}),
 	},
 	initialState
 );

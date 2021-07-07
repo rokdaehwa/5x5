@@ -11,8 +11,6 @@ function LetsExercise(props) {
 
 	const { flush, exercises, setDoneOrNot, today, handleSubmit, updateUserEmail, state } = props;
 
-	console.log('Lets get it', exercises);
-
 	useEffect(() => {
 		let newList = [];
 		for (let i = 0; i < exercises.length; i++) {
@@ -25,7 +23,6 @@ function LetsExercise(props) {
 				newListItem.setKey = null;
 				newListItem.setIndex = null;
 				newList.push(newListItem);
-				console.log('0', newListItem);
 			} else {
 				for (let j = 0; j < sets.length; j++) {
 					let newListItem = {};
@@ -38,7 +35,6 @@ function LetsExercise(props) {
 				}
 			}
 		}
-		console.log('newList', newList);
 		setList(newList);
 	}, []);
 
@@ -47,7 +43,6 @@ function LetsExercise(props) {
 	};
 
 	const handleNextExercise = (done) => {
-		console.log('to the next round!');
 		const info = list[index];
 		setList(
 			list.map((item, i) => {

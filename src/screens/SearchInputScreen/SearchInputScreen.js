@@ -3,7 +3,6 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
-import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -12,6 +11,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -19,6 +19,7 @@ import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import CancelIcon from '@material-ui/icons/Cancel';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 
+import Chip from 'components/Chip';
 import AddExerciseScreen from 'screens/AddExerciseScreen';
 import * as hangul from 'hangul-js';
 import { useStyles } from './styles';
@@ -28,6 +29,10 @@ function SearchInputScreen(props) {
 	const [searchInput, setSearchInput] = useState('');
 	const [focused, setFocused] = useState(false);
 	const [addOpen, setAddOpen] = useState(false);
+	const [snackbar, setSnackbar] = useState({
+		exercise: '',
+		open: false,
+	});
 	const classes = useStyles();
 	const history = useHistory();
 	const { input } = useParams();
@@ -76,14 +81,30 @@ function SearchInputScreen(props) {
 		// https://github.com/e-/Hangul.js
 		// TODO: 초성으로도 검색!
 		const _input = searchInput.replace(/\s/g, '');
+		const _itemName = item.exerciseName.replace(/\s/g, '');
 		if (_input === '') return item;
-		if (hangul.search(item.exerciseName.replace(/\s/g, ''), _input) === 0) return item;
+		if (hangul.search(_itemName, _input) === 0) return item;
 		if (hangul.search(item.exerciseParts.join(''), _input) === 0) return item;
+		if (_itemName.includes(_input)) return item;
 	};
 	
-	const handleAdd = (key) => () => {
+	const handleAdd = (key, exerciseName) => () => {
 		addExercise(exerciseData, key);
+		setSnackbar({
+			exercise: exerciseName,
+			open: true,
+		});
 	}
+	
+	const handleSnackClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSnackbar({
+			...snackbar,
+			open: false,
+		});
+	};
 
 	return (
 		<div className={classes.root}>
@@ -135,11 +156,11 @@ function SearchInputScreen(props) {
 								<ListItemText primary={
 										<div>
 											{item.exerciseName + ' '}
-											{item.my ? <Chip label='my' size="small"/> :null}
+											{item.my ? <Chip label='my' size="small"color='warning'/> :null}
 										</div>								
 									} />
 								<ListItemSecondaryAction>
-									<IconButton color='primary' onClick={handleAdd(item.key)}>
+									<IconButton color='primary' onClick={handleAdd(item.key, item.exerciseName)}>
 										<AddCircleIcon />
 									</IconButton>
 								</ListItemSecondaryAction>
@@ -162,6 +183,18 @@ function SearchInputScreen(props) {
 			<Dialog open={addOpen} onClose={handleAddClose} fullScreen>
 				<AddExerciseScreen input={searchInput} handleAddClose={handleAddClose} resetInput={resetInput}/>
 			</Dialog>
+			<Snackbar
+				open={snackbar.open}
+				onClose={handleSnackClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				autoHideDuration={2000}
+			>
+				<div className={classes.snackbar}>{`${snackbar.exercise} 추가되었습니다.`}</div>
+			</Snackbar>
+			
 		</div>
 	);
 }
