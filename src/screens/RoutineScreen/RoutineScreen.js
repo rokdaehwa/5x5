@@ -168,11 +168,7 @@ function RoutineScreen(props) {
 													: `${set.weight}kg`
 											} ${set.reps}${set.repsUnit}`}
 											secondaryTypographyProps={{
-												color: `${
-													set.setReps <= 0
-														? 'textSecondary'
-														: 'textPrimary'
-												}`,
+												color: 'textPrimary'
 											}}
 										/>
 
@@ -187,7 +183,7 @@ function RoutineScreen(props) {
 													onClick={() =>
 														decrementSetReps(exercise.key, set.key)
 													}
-													disabled={set.setReps <= 0}
+													disabled={set.setReps <= 1}
 												>
 													-
 												</ButtonBase>
@@ -271,7 +267,7 @@ function RoutineScreen(props) {
 													{...provided.draggableProps}
 													{...provided.dragHandleProps}
 												>
-													<ListItem button={exercise.my}>
+													<ListItem>
 														<ListItemText
 															primary={
 																<div>

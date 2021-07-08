@@ -4,12 +4,13 @@ import LetsStartScreen from './LetsStartScreen';
 import LetsEndScreen from './LetsEndScreen';
 import LetsExerciseScreen from './LetsExerciseScreen';
 import LetsResultScreen from './LetsResultScreen';
+import LetsRoutineScreen from './LetsRoutineScreen';
 
 function LetsExercise(props) {
 	const [list, setList] = useState([]);
 	const [index, setIndex] = useState(-1);
 
-	const { flush, exercises, setDoneOrNot, today, handleSubmit, updateUserEmail, state } = props;
+	const { exercises, setDoneOrNot, today, handleSubmit, updateUserEmail, state } = props;
 
 	useEffect(() => {
 		let newList = [];
@@ -87,16 +88,17 @@ function LetsExercise(props) {
 	const getCurrentScreen = () => {
 		const total = list.length;
 		if (index <= -1)
+			// return <LetsRoutineScreen exercises={exercises}/>
 			return <LetsStartScreen today={today} exercises={exercises} handleNext={handleNext} />;
 		else if (index <= total - 1) {
 			return (
 				<LetsExerciseScreen
 					handleNext={handleNextExercise}
 					getSetInfo={getSetInfo}
+					keyInfo={list[index]}
 					index={index}
-					numList={list.length}
-					flush={flush}
 					setIndex={setIndex}
+					exercises={exercises}
 				/>
 			);
 		} else if (index === total) return <LetsEndScreen handleNext={handleNext} />;
@@ -104,7 +106,6 @@ function LetsExercise(props) {
 			return (
 				<LetsResultScreen
 					list={list}
-					flush={flush}
 					exercises={exercises}
 					today={today}
 					handleSubmit={handleSubmit}

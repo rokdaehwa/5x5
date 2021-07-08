@@ -62,8 +62,8 @@ export const setDoneOrNot = createAction(
 );
 export const flush = createAction(FLUSH);
 
-// const initialState = MOCK_EXERCISES;
-const initialState = [];
+const initialState = MOCK_EXERCISES;
+// const initialState = [];
 
 export default handleActions(
 	{

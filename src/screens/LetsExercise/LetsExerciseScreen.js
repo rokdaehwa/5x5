@@ -1,18 +1,44 @@
+/*
+	Todo: 
+		1. Navigate exercises
+			<ButtonBase className={classes.iconButton}>
+				<SkipPreviousRoundedIcon className={classes.iconButtonIcon} />
+			</ButtonBase>
+
+			<ButtonBase className={classes.iconButton}>
+				<SkipNextRoundedIcon className={classes.iconButtonIcon} />
+			</ButtonBase>
+		2. Edit Exercises
+			- Add set
+			- Add exercise
+*/
+
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar } from '@material-ui/core';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
+import ShortTextRoundedIcon from '@material-ui/icons/ShortTextRounded';
+import SkipPreviousRoundedIcon from '@material-ui/icons/SkipPreviousRounded';
+import SkipNextRoundedIcon from '@material-ui/icons/SkipNextRounded';
+
+import LetsRoutineScreen from './LetsRoutineScreen';
 
 import { useInterval } from 'hooks/useInterval';
+
+const black = '#000000';
+const white = '#ffffff';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -20,77 +46,122 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
+		backgroundColor: black,
+		color: white,
 	},
 	appBar: {
 		flexGrow: 1,
-		backgroundColor: theme.palette.common.white,
-		color: theme.palette.common.black,
-	},
-	toolbar: {
-		display: 'flex',
-		justifyContent: 'space-between',
+		backgroundColor: black,
+		color: white,
 	},
 	trailing: {
 		marginLeft: 'auto',
 		display: 'flex',
 		alignItems: 'center',
 	},
-	linearProgress: {
-		backgroundColor: theme.palette.common.black + '0a',
+	iconButton: {
+		padding: theme.spacing(0.5),
+		borderRadius: theme.spacing(1),
 	},
-	titleContainer: {
-		marginTop: theme.spacing(8),
-		textAlign: 'center',
+	iconButtonIcon: {
+		width: 40,
+		height: 40,
 	},
-	container: {
-		flex: 1,
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		// alignItems: 'center',
+	bottomAppBar: {
+		borderTop: '2px solid #ffffff10',
+		position: 'fixed',
+		top: 'auto',
+		bottom: 0,
+		backgroundColor: black,
+		color: white,
+		padding: theme.spacing(0, 2),
+	},
+	colorWhite: {
+		color: white,
+	},
+	flip: {
+		transform: 'scaleX(-1)',
+	},
+	btnPlayPause: {
+		position: 'relative',
+		borderRadius: '50%',
+	},
+	btnIcon: {
+		position: 'absolute',
+		top: 'auto',
+		bottom: 'auto',
+		left: 'auto',
+		right: 'auto',
+		'& > *': {
+			width: 200,
+			height: 200,
+			color: white + 30,
+		},
+	},
+	btnInfo: {
+		position: 'absolute',
+		top: 'auto',
+		bottom: 'auto',
+		left: 'auto',
+		right: 'auto',
+		color: white,
 	},
 	controlContainer: {
 		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: 'space-between',
+		// width: 'calc(100% - 60px)',
 	},
-	setInfo: {
-		height: theme.spacing(8),
-		display: 'flex',
-		flexDirection: 'column-reverse',
-		'& > *': {
-			backgroundColor: theme.palette.primary.main,
-			color: theme.palette.common.white,
-			width: '100vw',
-			padding: `${theme.spacing(2)}px 0px`,
-			textAlign: 'center',
-		},
+	controlIcon: {
+		width: 70,
+		height: 70,
 	},
-	setInfoRest: {
-		height: theme.spacing(8), // 이 수치를 조절해서 화면 표시
-		display: 'flex',
-		flexDirection: 'column-reverse',
-		'& > *': {
-			backgroundColor: theme.palette.common.black,
-			color: theme.palette.common.white,
-			width: '100vw',
-			padding: `${theme.spacing(2)}px 0px`,
-			textAlign: 'center',
-		},
+	failIcon: {
+		opacity: 0.5,
 	},
-	spacing: {
-		width: theme.spacing(1),
-		height: theme.spacing(1),
-	},
-	iconButton: {
-		width: 100,
-		height: 100,
+	doneIcon: {
+		color: theme.palette.success.main,
 	},
 }));
+
+const Progress = (props) => {
+	let newProps = { ...props };
+	delete newProps.color;
+	const StyledProgress = withStyles((theme) => {
+		let color = props.color;
+		switch (color) {
+			case 'primary':
+				color = theme.palette.primary.main;
+				break;
+			case 'secondary':
+				color = theme.palette.secondary.main;
+				break;
+			case 'warning':
+				color = theme.palette.warning.main;
+				break;
+			default:
+		}
+		return {
+			root: {},
+			colorPrimary: {
+				// backgroundColor: white + 10,
+				color,
+			},
+			circle: {
+				strokeLinecap: 'round',
+			},
+		};
+	})(CircularProgress);
+
+	return <StyledProgress {...newProps} />;
+};
 
 function LetsExerciseScreen(props) {
 	const classes = useStyles();
 	const history = useHistory();
+	const size = {
+		width: window.innerWidth,
+		height: window.innerHeight,
+	};
 
 	const [setInfo, setSetInfo] = useState({
 		exerciseName: '',
@@ -100,7 +171,9 @@ function LetsExerciseScreen(props) {
 	const [isTicking, setIsTicking] = useState(true);
 	const [isRest, setIsRest] = useState(false);
 
-	const { handleNext, getSetInfo, index, numList, setIndex } = props;
+	const [openRoutine, setOpenRoutine] = useState(false);
+
+	const { handleNext, getSetInfo, index, setIndex, exercises, keyInfo, flush } = props;
 
 	useInterval(
 		() => {
@@ -115,11 +188,14 @@ function LetsExerciseScreen(props) {
 	}, [index]);
 
 	const formatMMSS = (second) => {
-		let min = parseInt(second / 60);
+		const sign = second < 0 ? '-' : '';
+		const _second = Math.abs(second);
+
+		let min = parseInt(_second / 60);
 		if (min < 10) min = '0' + min;
-		let sec = second % 60;
+		let sec = _second % 60;
 		if (sec < 10) sec = '0' + sec;
-		return `${min}:${sec}`;
+		return `${sign}${min}:${sec}`;
 	};
 
 	const handleClick = (done) => {
@@ -132,79 +208,105 @@ function LetsExerciseScreen(props) {
 		setIndex(index + 1);
 	};
 
+	const handleRoutineOpen = () => {
+		setOpenRoutine(true);
+	};
+
+	const handleRoutineClose = () => {
+		setOpenRoutine(false);
+	};
+
 	return (
 		<div className={classes.root}>
 			<AppBar classes={{ root: classes.appBar }} elevation={0} position="fixed">
 				<Toolbar>
-					<IconButton
-						onClick={() => {
-							history.goBack();
-						}}
+					<ButtonBase
+						className={classes.iconButton}
+						onClick={() => 
+							history.goBack()
+						}
 					>
 						<CloseRoundedIcon />
-					</IconButton>
-					<div className={classes.trailing}>
-						<Typography>{`${formatMMSS(ticker)}`}</Typography>
-						<IconButton onClick={() => setIsTicking(!isTicking)}>
-							{isTicking ? <PauseRoundedIcon /> : <PlayArrowRoundedIcon />}
-						</IconButton>
-					</div>
+					</ButtonBase>
 				</Toolbar>
-				<LinearProgress
-					className={classes.linearProgress}
-					variant="determinate"
-					value={(index / numList) * 100}
-					color={isRest ? 'secondary' : 'primary'}
-				/>
 			</AppBar>
 			<Toolbar />
-			<div className={classes.titleContainer}>
-				<Typography variant="h5">
-					<b>{isRest ? '휴식' : setInfo.exerciseName}</b>
-				</Typography>
-				<Typography variant="h6">
-					{isRest ? '45초' : setInfo.exerciseParts.join(', ')}
-				</Typography>
-			</div>
-			<div className={classes.container}>
-				{setInfo.set === null ? null : (
-					<div className={isRest ? classes.setInfoRest : classes.setInfo}>
-						<Typography variant="h6">
-							<b>
-								{isRest
-									? `다음: ${getSetInfo(index).exerciseName} ${
-											getSetInfo(index).set
-									  }`
-									: setInfo.set}
-							</b>
-						</Typography>
-					</div>
-				)}
-				{isRest ? (
-					<div className={classes.controlContainer}>
-						<IconButton onClick={() => handleClick(true)}>
-							<CheckCircleRoundedIcon
-								color={'inherit'}
-								className={classes.iconButton}
-							/>
-						</IconButton>
-					</div>
-				) : (
-					<div className={classes.controlContainer}>
-						<IconButton onClick={() => handleClick(false)}>
-							<HighlightOffRoundedIcon color="error" className={classes.iconButton} />
-						</IconButton>
+			<ButtonBase className={classes.btnPlayPause} onClick={() => setIsTicking(!isTicking)}>
+				<Progress
+					size={size.width - 32}
+					thickness={0.5}
+					variant="determinate"
+					value={isRest ? Math.max(0.5, ((60 - ticker) * 100) / 60) : 100}
+					color={isRest ? 'warning' : white}
+				/>
+				<span className={classes.btnIcon}>
+					{isTicking ? <PauseRoundedIcon /> : <PlayArrowRoundedIcon />}
+				</span>
+				<span className={classes.btnInfo}>
+					<Typography
+						variant="h2"
+						color={isRest && ticker > 60 ? 'secondary' : 'inherit'}
+					>{`${formatMMSS(isRest ? 60 - ticker : ticker)}`}</Typography>
+					<Typography variant="h5">
+						<b>{isRest ? '휴식' : setInfo.exerciseName}</b>
+					</Typography>
+					<Typography>
+						{isRest
+							? `다음: ${getSetInfo(index).exerciseName} ${getSetInfo(index).set}`
+							: setInfo.set}
+					</Typography>
+				</span>
+			</ButtonBase>
+			{isRest ? (
+				<div className={classes.controlContainer} style={{ width: size.width - 32 }}>
+					<div />
+					<ButtonBase onClick={() => handleClick(true)} color="inherit">
+						<CheckCircleRoundedIcon
+							className={classes.controlIcon}
+							style={{ width: size.width / 4, height: size.width / 4 }}
+						/>
+					</ButtonBase>
+				</div>
+			) : (
+				<div className={classes.controlContainer} style={{ width: size.width - 32 }}>
+					<ButtonBase onClick={() => handleClick(false)}>
+						<HighlightOffRoundedIcon
+							color="error"
+							className={[classes.controlIcon, classes.failIcon].join(' ')}
+							style={{ width: size.width / 4, height: size.width / 4 }}
+						/>
+					</ButtonBase>
 
-						<div className={classes.spacing} />
-						<IconButton onClick={() => handleClick(true)}>
-							<CheckCircleRoundedIcon
-								color={'primary'}
-								className={classes.iconButton}
-							/>
-						</IconButton>
-					</div>
-				)}
-			</div>
+					<div className={classes.spacing} />
+					<ButtonBase onClick={() => handleClick(true)}>
+						<CheckCircleRoundedIcon
+							className={[classes.controlIcon, classes.doneIcon].join(' ')}
+							style={{ width: size.width / 4, height: size.width / 4 }}
+						/>
+					</ButtonBase>
+				</div>
+			)}
+
+			<AppBar className={classes.bottomAppBar}>
+				<Toolbar disableGutters>
+					<ButtonBase
+						className={[classes.iconButton, classes.trailing].join(' ')}
+						onClick={handleRoutineOpen}
+					>
+						<ShortTextRoundedIcon
+							className={[classes.flip, classes.iconButtonIcon].join(' ')}
+						/>
+					</ButtonBase>
+				</Toolbar>
+			</AppBar>
+
+			<Dialog open={openRoutine} onClose={handleRoutineClose} fullScreen>
+				<LetsRoutineScreen
+					exercises={exercises}
+					handleClose={handleRoutineClose}
+					keyInfo={keyInfo}
+				/>
+			</Dialog>
 		</div>
 	);
 }

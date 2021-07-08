@@ -27,13 +27,20 @@ import ShortTextRoundedIcon from '@material-ui/icons/ShortTextRounded';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: '100vw',
-		height: '100vh',
+		// height: '100vh',
 		backgroundColor: theme.palette.common.black,
 	},
 	appBar: {
 		flexGrow: 1,
 		backgroundColor: theme.palette.common.black,
 		color: theme.palette.common.white,
+	},
+	bottom: {
+		backgroundColor: theme.palette.common.black,
+		color: theme.palette.common.white,
+		position: 'fixed',
+		top: 'auto',
+		bottom: 0,
 	},
 	toolbar: {
 		display: 'flex',
@@ -57,19 +64,14 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.common.white,
 	},
 	flip: {
-		transform:' scaleX(-1)',
-	}
+		transform: ' scaleX(-1)',
+	},
 }));
 
 export default function TestScreen() {
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
-
 	const handleClick = () => {
 		console.info('You clicked the chipchip.');
-	};
-	const handleOpen = () => {
-		setOpen(!open);
 	};
 
 	return (
@@ -87,6 +89,128 @@ export default function TestScreen() {
 				</Toolbar>
 			</AppBar>
 			<Toolbar />
+			
+			<List component="nav" aria-label="main mailbox folders">
+				<ListItem className={classes.listItem}>
+					<ListItemText
+						primary="벤치프레스"
+						primaryTypographyProps={{
+							variant: 'h6',
+						}}
+					/>
+					<ListItemSecondaryAction>
+						<Button className={classes.colorWhite}>추가</Button>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<CheckCircleRoundedIcon />}
+							label="완료"
+							onClick={handleClick}
+							disabled
+							color="primary"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem} button>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<BarChartRoundedIcon />}
+							label="4회 남음"
+							onClick={handleClick}
+							color="warning"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<PlayCircleFilledRoundedIcon />}
+							label="6회 남음"
+							onClick={handleClick}
+							color="warning"
+							variant="outlined"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<PlayCircleFilledRoundedIcon />}
+							label="6회 남음"
+							onClick={handleClick}
+							color="warning"
+							variant="outlined"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+			</List>
+			
+			<List component="nav" aria-label="main mailbox folders">
+				<ListItem className={classes.listItem}>
+					<ListItemText
+						primary="벤치프레스"
+						primaryTypographyProps={{
+							variant: 'h6',
+						}}
+					/>
+					<ListItemSecondaryAction>
+						<Button className={classes.colorWhite}>추가</Button>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<CheckCircleRoundedIcon />}
+							label="완료"
+							onClick={handleClick}
+							disabled
+							color="primary"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem} button>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<BarChartRoundedIcon />}
+							label="4회 남음"
+							onClick={handleClick}
+							color="warning"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<PlayCircleFilledRoundedIcon />}
+							label="6회 남음"
+							onClick={handleClick}
+							color="warning"
+							variant="outlined"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+				<ListItem className={classes.listItem}>
+					<ListItemText primary={<div className={classes.listItemText}>20kg 15회</div>} />
+					<ListItemSecondaryAction>
+						<Chip
+							icon={<PlayCircleFilledRoundedIcon />}
+							label="6회 남음"
+							onClick={handleClick}
+							color="warning"
+							variant="outlined"
+						/>
+					</ListItemSecondaryAction>
+				</ListItem>
+			</List>
 
 			<List component="nav" aria-label="main mailbox folders">
 				<ListItem className={classes.listItem}>
@@ -147,41 +271,21 @@ export default function TestScreen() {
 						/>
 					</ListItemSecondaryAction>
 				</ListItem>
-				<ListItem button onClick={handleOpen} className={classes.listItem}>
-					<ListItemText primary="Inbox" />
-					{open ? <ExpandLess /> : <ExpandMore />}
-				</ListItem>
 			</List>
 
-			<Collapse in={open} timeout="auto" unmountOnExit>
-				<List component="div" disablePadding>
-					<ListItem button className={[classes.nested, classes.listItem].join(' ')}>
-						<ListItemText
-							primary={<div className={classes.listItemText}>20kg 15회</div>}
-						/>
-						<ListItemSecondaryAction>
-							<Chip
-								icon={<PlayCircleFilledRoundedIcon />}
-								label="6회 남음"
-								onClick={handleClick}
-								color="warning"
-								variant="outlined"
-							/>
-						</ListItemSecondaryAction>
-					</ListItem>
-				</List>
-			</Collapse>
+			<Toolbar />
 
-			<ListItem className={classes.listItem}>
+			<ListItem className={classes.bottom}>
 				<ListItemText
 					secondary={<div className={classes.colorWhite}>벤치프레스 20kg 15회</div>}
 				/>
 				<Chip
-							icon={<BarChartRoundedIcon />}
-							label="4회 남음"
-							onClick={handleClick}
-							color="warning"
-						/>
+					icon={<BarChartRoundedIcon />}
+					label="4회 남음"
+					onClick={handleClick}
+					color="warning"
+					size="small"
+				/>
 			</ListItem>
 		</div>
 	);

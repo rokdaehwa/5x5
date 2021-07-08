@@ -3,6 +3,8 @@ import MaterialChip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 
 const Chip = (props) => {
+	let newProps = {...props};
+	delete newProps.color;
 	const StyledChip = withStyles((theme) => {
 		let color = props.color;
 		switch (color) {
@@ -46,7 +48,7 @@ const Chip = (props) => {
 		};
 	})(MaterialChip);
 
-	return <StyledChip {...props} />;
+	return <StyledChip {...newProps}  />;
 };
 
 export default Chip;
